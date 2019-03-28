@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GithubParser</string>
+    <string name="avatar">Avatar</string>
+    <string name="date">Date</string>
+    <string name="login">Login</string>
+    <string name="webView">WebView</string>
+</resources>
