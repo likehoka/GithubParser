@@ -12,7 +12,6 @@ const val BASE_URL = "https://api.github.com/repos/Omega-R/OmegaRecyclerView/"
 interface APIStargazers {
     @GET("stargazers?")
     @Headers("Accept: application/vnd.github.v3.star+json")
-
     fun getStargazers() : Call<List<Stargazers>>
 
     companion object {
@@ -21,7 +20,7 @@ interface APIStargazers {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(APIStargazers::class.java)
+                .create(APIStargazers::class.java)//для singlton APIStargazers
         }
     }
 }
