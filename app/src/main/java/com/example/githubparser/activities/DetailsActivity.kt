@@ -1,4 +1,4 @@
-package com.example.githubparser.Activity
+package com.example.githubparser.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,7 +13,7 @@ class DetailsActivity : AppCompatActivity() {
 
         val intent = intent
         val result = intent.getStringExtra("webUrl")
-        val webView = findViewById<WebView>(R.id.webview)
+        val webView = findViewById<WebView>(R.id.webView)
         webView.loadUrl(result)
     }
 }

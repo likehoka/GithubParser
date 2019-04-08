@@ -1,4 +1,4 @@
-package com.example.githubparser.Adapter
+package com.example.githubparser.adapters
 
 import android.content.Intent
 import android.util.Log
@@ -6,33 +6,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.githubparser.Activity.DetailsActivity
-import com.example.githubparser.Model.Stargazers
+import com.example.githubparser.activities.DetailsActivity
+import com.example.githubparser.model.Stargazers
 import com.example.githubparser.R
-import kotlinx.android.synthetic.main.layout_stargazers.view.*
+import kotlinx.android.synthetic.main.item_stargazers.view.*
 
-class AdapterStargazers(val stargazers: List<Stargazers>) :
-    RecyclerView.Adapter<AdapterStargazers.StargazersViewHolder>() {
+class StargazersAdapter(val stargazers: List<Stargazers>) :
+    RecyclerView.Adapter<StargazersAdapter.StargazersViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StargazersViewHolder {
         return StargazersViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_stargazers, parent, false)
+                .inflate(R.layout.item_stargazers, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: StargazersViewHolder, position: Int) {
         val stargazer = stargazers[position]
-        holder.view.starred_atTV.text = stargazer.starred_at
+        holder.view.starred_atTV.text = stargazer.date
         holder.view.login.text = stargazer.user.username
         holder.view.btnDetailsActivity.setOnClickListener {
             val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
-            intentDetailsActivity.putExtra("webUrl", stargazer.user.html_url)
-            Log.d("mLog", "Передаем: ${stargazer.user.html_url}")
+            intentDetailsActivity.putExtra("webUrl", stargazer.user.htmlUrl)
+            Log.d("mLog", "Передаем: ${stargazer.user.htmlUrl}")
             holder.view.context.startActivity(intentDetailsActivity)
         }
     }
 
     override fun getItemCount() = stargazers.size
+
     class StargazersViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 

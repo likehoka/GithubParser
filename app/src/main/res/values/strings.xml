@@ -3,5 +3,11 @@
     <string name="avatar">Avatar</string>
     <string name="date">Date</string>
     <string name="login">Login</string>
-    <string name="webView">WebView</string>
+    <string name="webView">About</string>
+    <string name="title_activity_basic_test">BasicTest</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="owner">Owner</string>
+    <string name="repositoryName">Repository Name</string>
+    <string name="ownerTextView">Input owner name</string>
+    <string name="repositoryTextView">Input repos name</string>
 </resources>

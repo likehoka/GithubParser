@@ -1,10 +1,13 @@
-package com.example.githubparser.Model
+package com.example.githubparser.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Stargazers(
+data class Stargazers (
+
     @SerializedName("starred_at")
-    val starred_at: String,
+    val date: String,
+
     @SerializedName("user")
     val user: User
+
 )
