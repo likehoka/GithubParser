@@ -6,22 +6,26 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
-const val BASE_URL = "https://api.github.com/repos/Omega-R/OmegaRecyclerView/"
 
+private const val BASE_URL = "https://api.github.com/repos/"
+//Our URL is "https://api.github.com/repos/Omega-R/OmegaRecyclerView/stargazers"
 interface StargazersApi {
 
-    @GET("stargazers")
+
+    @GET("{owner}/{repository}/stargazers?per_page=100&page=0")
     @Headers("Accept: application/vnd.github.v3.star+json")
-    fun getStargazers() : Call<List<Stargazers>>
+    fun getStargazers(@Path("owner") ownerName: String,
+                      @Path("repository") repositoryName: String): Call<List<Stargazers>>
 
     companion object {
-        operator fun invoke() : StargazersApi{
+        operator fun invoke(): StargazersApi {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(StargazersApi::class.java)//для singlton StargazersApi
+                .create(StargazersApi::class.java)
         }
     }
 }

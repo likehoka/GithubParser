@@ -5,9 +5,12 @@
     <string name="login">Login</string>
     <string name="webView">About</string>
     <string name="title_activity_basic_test">BasicTest</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main2">RepositoryActivity</string>
     <string name="owner">Owner</string>
     <string name="repositoryName">Repository Name</string>
     <string name="ownerTextView">Input owner name</string>
     <string name="repositoryTextView">Input repos name</string>
+    <string name="title_stargazers_activity">StargazersActivity</string>
+    <string name="title_details_activity">DetailsActivity</string>
+    <string name="title_graph_activity">GraphActivity</string>
 </resources>

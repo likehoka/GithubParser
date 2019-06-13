@@ -5,19 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.model.Repository
 import com.example.githubparser.R
+import com.example.githubparser.activities.GraphActivity
 import com.example.githubparser.activities.StargazersActivity
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
-    //var itemRepositoryList: List<Repository> = emptyList()
-    val repositoryList: MutableList<Repository> = mutableListOf()
-    var itemRepositoryList: List<Repository> = repositoryList
+    private val repositoryList: MutableList<Repository> = mutableListOf()
 
     fun addItemRepository(repository: Repository) {
-        itemRepositoryList = repositoryList
         repositoryList.add(0, repository)
         notifyItemInserted(0)
         Log.d("mLog", "itemcount = {$itemCount}")
@@ -29,20 +28,18 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
                 .inflate(R.layout.item_repository, parent, false)
         )
     }
-    override fun getItemCount(): Int = itemRepositoryList.size
+
+    override fun getItemCount(): Int = repositoryList.size
 
     override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
-        val repository = itemRepositoryList[position]
+        val repository = repositoryList[position]
         holder.itemView.ownerNameTextView.text = repository.ownerName
         holder.itemView.repositoryNameTextView.text = repository.repositoryName
         holder.itemView.repositoryCardView.setOnClickListener {
-            val intentStargazersActivity = Intent(holder.itemView.context, StargazersActivity::class.java)
-            intentStargazersActivity.putExtra("ownerName", repository.ownerName)
-            intentStargazersActivity.putExtra("repositoryName", repository.repositoryName)
-            holder.itemView.context.startActivity(intentStargazersActivity)
+
+            //holder.itemView.context.startActivity(StargazersActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
+            holder.itemView.context.startActivity(GraphActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
         }
     }
-    class RepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    class RepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }
