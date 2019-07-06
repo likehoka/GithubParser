@@ -1,16 +1,13 @@
 package com.example.githubparser.adapters
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.model.Repository
 import com.example.githubparser.R
 import com.example.githubparser.activities.GraphActivity
-import com.example.githubparser.activities.StargazersActivity
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
@@ -19,7 +16,11 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
     fun addItemRepository(repository: Repository) {
         repositoryList.add(0, repository)
         notifyItemInserted(0)
-        Log.d("mLog", "itemcount = {$itemCount}")
+        Log.d("test", "itemcount = {$itemCount}")
+    }
+
+    fun addAllItemRepository(notes: MutableList<Repository>) {
+        repositoryList.addAll(notes)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryAdapter.RepositoryViewHolder {
@@ -37,7 +38,6 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
         holder.itemView.repositoryNameTextView.text = repository.repositoryName
         holder.itemView.repositoryCardView.setOnClickListener {
 
-            //holder.itemView.context.startActivity(StargazersActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
             holder.itemView.context.startActivity(GraphActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
         }
     }

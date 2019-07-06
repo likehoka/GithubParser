@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubparser.R
 import com.example.githubparser.adapters.StargazersAdapter
 import com.example.githubparser.api.StargazersApi
-import com.example.githubparser.model.Stargazers
+import com.example.githubparser.api.StargazersList
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -47,13 +47,13 @@ class StargazersActivity : BaseActivity() {
 
     private fun fetchStargazers(ownerName: String, repositoryName: String) {
         refreshLayout.isRefreshing = true
-        StargazersApi().getStargazers(ownerName, repositoryName).enqueue(object : Callback<List<Stargazers>> {
-            override fun onFailure(call: Call<List<Stargazers>>, t: Throwable) {
+        StargazersApi().getStargazers(ownerName, repositoryName, "0").enqueue(object : Callback<List<StargazersList>> {
+            override fun onFailure(call: Call<List<StargazersList>>, t: Throwable) {
                 refreshLayout.isRefreshing = false
                 Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
             }
 
-            override fun onResponse(call: Call<List<Stargazers>>, response: Response<List<Stargazers>>) {
+            override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
                 Log.d("mLog", response.body().toString())
                 refreshLayout.isRefreshing = false
                 val stargazers = response.body()
@@ -64,7 +64,7 @@ class StargazersActivity : BaseActivity() {
         })
     }
 
-    private fun showStargazers(stargazer: List<Stargazers>) {
+    private fun showStargazers(stargazer: List<StargazersList>) {
         val map = mutableMapOf<Int, Year>()
 
         stargazer.forEach {
@@ -102,13 +102,9 @@ class StargazersActivity : BaseActivity() {
     }
 
     class Year {
-
         val monthMap = mutableMapOf<Int, Month>()
-
     }
-
     class Month {
-
         var likes = 0
     }
 

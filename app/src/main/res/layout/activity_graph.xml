@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:barchart="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".activities.GraphActivity">
 
+
     <com.github.mikephil.charting.charts.BarChart
+            android:minHeight="10dp"
             android:id="@+id/barChart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbarDefaultDelayBeforeFade="400"
-            android:clickable="false"/>
+            android:clickable="false"
+            tools:ignore="MissingConstraints"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

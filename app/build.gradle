@@ -44,4 +44,8 @@ dependencies {
     implementation 'org.quanqi:mpandroidchart:1.7.5'
     implementation 'com.j256.ormlite:ormlite-android:5.1'
     implementation 'com.j256.ormlite:ormlite-jdbc:5.1'
+    implementation 'me.ithebk:barchart:0.9'
+
+    kapt "io.objectbox:objectbox-processor:$objectboxVersion"
+
 }

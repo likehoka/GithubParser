@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 private const val BASE_URL = "https://api.github.com/repos/"
@@ -14,10 +15,13 @@ private const val BASE_URL = "https://api.github.com/repos/"
 interface StargazersApi {
 
 
-    @GET("{owner}/{repository}/stargazers?per_page=100&page=0")
+    //@GET("{owner}/{repository}/stargazers?per_page=100&page={counter}")
+    @GET("{owner}/{repository}/stargazers?per_page=100")
+    //@Query("counter")
     @Headers("Accept: application/vnd.github.v3.star+json")
     fun getStargazers(@Path("owner") ownerName: String,
-                      @Path("repository") repositoryName: String): Call<List<Stargazers>>
+                      @Path("repository") repositoryName: String,
+                      @Query("page") counterStargazers: String): Call<List<StargazersList>>
 
     companion object {
         operator fun invoke(): StargazersApi {

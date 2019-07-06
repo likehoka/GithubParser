@@ -1,13 +1,12 @@
 package com.example.githubparser.model
 
-import com.google.gson.annotations.SerializedName
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 
+@Entity
 data class Repository(
-
-    @SerializedName("owner")
+    @Id var id: Long = 0,
     val ownerName: String = "ownerName",
-
-    @SerializedName("repository")
     val repositoryName: String = "repositoryName"
 
 )

@@ -7,14 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.activities.DetailsActivity
-import com.example.githubparser.model.Stargazers
 import com.example.githubparser.R
-import com.example.githubparser.utils.GraphCounter
+import com.example.githubparser.api.StargazersList
 import kotlinx.android.synthetic.main.item_stargazers.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class StargazersAdapter(val stargazers: List<Stargazers>) :
+class StargazersAdapter(val stargazers: List<StargazersList>) :
     RecyclerView.Adapter<StargazersAdapter.StargazersViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StargazersViewHolder {
         return StargazersViewHolder(
@@ -36,11 +35,11 @@ class StargazersAdapter(val stargazers: List<Stargazers>) :
         //end test
 
         holder.view.starred_atTV.text = "${dateStr.day }-${dateStr.month+1}-${dateStr.year+1900}"
-        holder.view.login.text = stargazer.user.username
+        holder.view.login.text = stargazer.user.toString()
         holder.view.btnDetailsActivity.setOnClickListener {
             val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
-            intentDetailsActivity.putExtra("webUrl", stargazer.user.htmlUrl)
-            Log.d("test", "Передаем: ${stargazer.user.htmlUrl}")
+            intentDetailsActivity.putExtra("webUrl", stargazer.user.toString())
+            Log.d("test", "Передаем: ${stargazer.user.toString()}")
             holder.view.context.startActivity(intentDetailsActivity)
         }
     }
