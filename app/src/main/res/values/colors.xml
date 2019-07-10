@@ -3,4 +3,14 @@
     <color name="colorPrimary">#00BCD4</color>
     <color name="colorPrimaryDark">#3F51B5</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="color_2010">#D56986</color>
+    <color name="color_2011">#F57F48</color>
+    <color name="color_2012">#F5DE48</color>
+    <color name="color_2013">#7CF548</color>
+    <color name="color_2014">#248139</color>
+    <color name="color_2015">#32DFBC</color>
+    <color name="color_2016">#0C9FB9</color>
+    <color name="color_2017">#054C81</color>
+    <color name="color_2018">#6920DF</color>
+    <color name="color_2019">#941FDB</color>
 </resources>

@@ -18,13 +18,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.api.StargazersList
+import com.github.mikephil.charting.utils.ColorTemplate
 import io.objectbox.kotlin.boxFor
+import kotlin.collections.ArrayList
 
 
 class GraphActivity : BaseActivity() {
     var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
     var stargazersList: List<StargazersList> = emptyList()
-    var counterStargazers: Long = 0
+    var counterStargazers: Long = 1
 
     companion object {
         private const val EXTRA_OWNER_NAME = "ownerName"
@@ -49,15 +51,20 @@ class GraphActivity : BaseActivity() {
 
     private fun fetchStargazers(ownerName: String, repositoryName: String, counterStargazers: Long) {
         //refreshLayout.isRefreshing = true
-        var count: String = ""
-        count == counterStargazers.toString()
-        StargazersApi().getStargazers(ownerName, repositoryName, count).enqueue(object : Callback<List<StargazersList>> {
+        //var count: String = ""
+        //count == counterStargazers.toString()
+        //Log.d("test", "fetchStargazerscounterStargazers = " + counterStargazers.toString())
+        StargazersApi().getStargazers(ownerName, repositoryName, counterStargazers.toString()).enqueue(object : Callback<List<StargazersList>> {
+
             override fun onFailure(call: Call<List<StargazersList>>, t: Throwable) {
                 Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
                 Log.d("test", response.body().toString())
+                if (response.body() == null) {
+                    Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
+                } else
                 stargazersCounter(response.body(), ownerName, repositoryName)
             }
         })
@@ -66,14 +73,12 @@ class GraphActivity : BaseActivity() {
     private fun stargazersCounter(body: List<StargazersList>?,ownerName: String,repositoryName: String
     ) {
 
-        //val stargazersList = body
-        stargazersList += body!!
 
+        stargazersList += body!!
         if (body.size == 100) {
-            counterStargazers++
-            Log.d("test", "stargazersList.size = " + stargazersList.size)
+            counterStargazers += 1
             fetchStargazers(ownerName, repositoryName, counterStargazers)
-        } else {
+        } else if (body.size < 100) {
             stargazersList?.forEach {
                 it.owner = ownerName
                 it.repository = repositoryName
@@ -97,8 +102,6 @@ class GraphActivity : BaseActivity() {
 
     private fun showStargazers(stargazer: List<StargazersList>) {
         val map = mutableMapOf<Int, Year>()
-
-        Log.d("mLog:", "StargazersList Size is " + stargazer.size)
 
         stargazer.forEach {
             val date = it.getDate()
@@ -137,6 +140,7 @@ class GraphActivity : BaseActivity() {
                 val likes = month.likes
                 val monthName = month.monthName
                 count +=1
+                Log.d("counter", "month " + month.monthName + "; likes " + likes + "; year " + month.year)
             }
         }
         setBarChart(map)
@@ -146,6 +150,7 @@ class GraphActivity : BaseActivity() {
         val entries = ArrayList<BarEntry>()
         var count: Int = 0
         val labels = ArrayList<String>()
+
         map.forEach(){
             val year = it.value
             it.value.monthMap.forEach {
@@ -153,29 +158,23 @@ class GraphActivity : BaseActivity() {
                 val likes = month.likes
                 val monthName = month.monthName
                 entries.add(BarEntry(likes.toFloat(), count))
-                labels.add(monthName)
+                //labels.add(monthName)
+                labels.add(monthName+" "+it.value.year)
                 count += 1
             }
+
         }
-        val barDataSet = BarDataSet(entries, "Cells")
+
+        val barDataSet = BarDataSet(entries, "Likes")
+        barDataSet.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
+        //barDataSet.colors(getColor(colors)) = colors
         val data = BarData(labels, barDataSet)
         barChart.data = data // set the data and list of lables into chart
-
+        barChart.isDoubleTapToZoomEnabled = false
+        barChart.setTouchEnabled(true)
         if (entries.size > 5) {
-            barChart.setDescription("Set Bar Chart Description")  // set the description
-            barChart.setTouchEnabled(true)
-            barChart.zoom(2F,0F,2F,0F)
-
-            barChart.isDoubleTapToZoomEnabled = false
-        } else {barChart.setDescription("Set Bar Chart Description")  // set the description
-            barChart.setTouchEnabled(true)
-
-            barChart.isDoubleTapToZoomEnabled = false
+            barChart.zoom(1.5F,0F,1.5F,0F)
         }
-
-        //barDataSet.setColors(ColorTemplate.COLORFUL_COLORS)
-        barDataSet.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
-
 
         barChart.animateY(2000)
     }

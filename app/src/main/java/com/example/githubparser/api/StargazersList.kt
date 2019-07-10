@@ -10,6 +10,8 @@ class StargazersList(
     var repository: String = "",
     @SerializedName("starred_at")
     val stringDate: String,
+    @SerializedName("documentation_url")
+    val documentation: String,
     @SerializedName("user")
     val user: User
 ) {

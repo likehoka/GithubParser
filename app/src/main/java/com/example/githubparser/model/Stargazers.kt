@@ -15,6 +15,8 @@ class Stargazers (
     val owner: String = "",
     val repository: String = "",
     val stringDate: String = "",
+    //val stringYear: String = "",
+    //val stringMonth: String = "",
     val username: String = ""
 ) {
     companion object {
@@ -25,6 +27,8 @@ class Stargazers (
                 owner: String = "",
                 repository: String = "",
                 stringDate: String = "",
+                //stringYear: String = "",
+                //stringMonth: String = "",stringYear, stringMonth,
                 username: String = "",
     user: List<User> = emptyList()) : this(id, owner, repository, stringDate, username) {
         this.user.addAll(user)
