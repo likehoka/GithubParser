@@ -13,7 +13,43 @@ import kotlinx.android.synthetic.main.item_stargazers.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class StargazersAdapter(val stargazers: List<StargazersList>) :
+class StargazersAdapter(val stargazers: List<String>) :
+    RecyclerView.Adapter<StargazersAdapter.StargazersViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StargazersViewHolder {
+        return StargazersViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_stargazers, parent, false)
+        )
+    }
+
+    override fun onBindViewHolder(holder: StargazersViewHolder, position: Int) {
+
+        val stargazer = stargazers[position]
+        holder.view.login.text = stargazer
+        holder.view.setOnClickListener {
+            Log.d("test", "User: " + stargazer)
+            val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
+            intentDetailsActivity.putExtra("webUrl", stargazer)
+            holder.view.context.startActivity(intentDetailsActivity)
+        }
+        /*
+        holder.view.btnDetailsActivity.setOnClickListener {
+            //val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
+            //intentDetailsActivity.putExtra("webUrl", stargazer.user.toString())
+            Log.d("test", "Передаем: ${stargazer}")
+            //holder.view.context.startActivity(intentDetailsActivity)
+        }
+        */
+    }
+
+    override fun getItemCount() = stargazers.size
+
+    class StargazersViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+}
+
+
+/*
+class StargazersAdapter(val stargazers: List<String>) :
     RecyclerView.Adapter<StargazersAdapter.StargazersViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StargazersViewHolder {
         return StargazersViewHolder(
@@ -30,9 +66,6 @@ class StargazersAdapter(val stargazers: List<StargazersList>) :
         val dateStr: Date
         val stargazer = stargazers[position]
         dateStr = formatter.parse(stargazer.stringDate)
-        //Log.d("test", "${dateStr.year+1900} ${dateStr.month+1} ${dateStr.day}")
-        //Log.d("test", "Текущая дата:${stargazer.date}")
-        //end test
 
         holder.view.starred_atTV.text = "${dateStr.day }-${dateStr.month+1}-${dateStr.year+1900}"
         holder.view.login.text = stargazer.user.toString()
@@ -47,10 +80,8 @@ class StargazersAdapter(val stargazers: List<StargazersList>) :
     override fun getItemCount() = stargazers.size
 
     class StargazersViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
-
 }
-
+*/
 
 
 

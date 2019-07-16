@@ -14,35 +14,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                <ImageView
-                        android:id="@+id/avatar_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:background="@drawable/githubimage"
-                        android:contentDescription="@string/avatar"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_alignParentTop="true"/>
-            </LinearLayout>
 
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <TextView
-                        android:id="@+id/starred_atTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/date"
-                        android:textSize="20sp"
-                        android:layout_marginTop="10dp"
-                        android:background="#1C9603"
-                        android:textColor="#ffffff"/>
                 <TextView
                         android:id="@+id/login"
                         android:padding="10dp"
@@ -50,11 +26,6 @@
                         android:layout_height="wrap_content"
                         android:text="@string/login"
                         android:textSize="20sp" android:focusableInTouchMode="false"/>
-                <Button
-                        android:text="@string/webView"
-                        android:id="@+id/btnDetailsActivity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -15,9 +15,10 @@ class Stargazers (
     val owner: String = "",
     val repository: String = "",
     val stringDate: String = "",
-    //val stringYear: String = "",
-    //val stringMonth: String = "",
-    val username: String = ""
+    val month: String = "",
+    val year: String = "",
+    var likes: Int = 0,
+    var username: String = ""
 ) {
     companion object {
        private val formatter = SimpleDateFormat("yyyy-MM-dd")
@@ -27,10 +28,11 @@ class Stargazers (
                 owner: String = "",
                 repository: String = "",
                 stringDate: String = "",
-                //stringYear: String = "",
-                //stringMonth: String = "",stringYear, stringMonth,
+                month: String = "",
+                year: String = "",
+                likes: Int = 0,
                 username: String = "",
-    user: List<User> = emptyList()) : this(id, owner, repository, stringDate, username) {
+    user: List<User> = emptyList()) : this(id, owner, repository, stringDate, month, year, likes, username) {
         this.user.addAll(user)
     }
     fun getDate(): Date {

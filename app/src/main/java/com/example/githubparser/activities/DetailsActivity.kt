@@ -12,7 +12,8 @@ class DetailsActivity : BaseActivity() {
         setContentView(R.layout.activity_details)
 
         val result = intent.getStringExtra("webUrl")
-        val webView = findViewById<WebView>(R.id.webView)
-        webView.loadUrl(result)
+        val webView = findViewById<WebView>(R.id.webView).also {
+            it.loadUrl("https://github.com/" + result)
+        }
     }
 }

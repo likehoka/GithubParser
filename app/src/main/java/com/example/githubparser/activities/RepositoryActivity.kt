@@ -36,10 +36,7 @@ class RepositoryActivity : BaseActivity() {
     }
 
     private fun getDataBase(): MutableList<Repository> {
-
         val notes = notesRepository.query().build().find()
-        //adapter.addAllItemRepository(notes) //добавить весь список в адаптер
-
         Log.d("test", "Size = " + notes.size.toString())
         Log.d("test", "This is notes Log:")
         notes.forEach {
@@ -58,7 +55,6 @@ class RepositoryActivity : BaseActivity() {
                 status = false
             }
         }
-
         return status
     }
 
@@ -78,13 +74,10 @@ class RepositoryActivity : BaseActivity() {
                 val repository = Repository(ownerName = ownerText, repositoryName = repositoryText)
                 Log.d("test", "$ownerText,$repositoryText")
                 adapter.addItemRepository(repository)
-                //objectBox
-                //val repositoryDb = Repository(ownerName = ownerText, repositoryName = repositoryText)
-                //add new Repository
                 notesRepository.put(repository)
             } else {
-                Toast.makeText(this, "This repository is recorded", Toast.LENGTH_LONG).show()
-                Log.d("test", "This repository is recorded")
+                Toast.makeText(this, "This repository has already been recorded", Toast.LENGTH_LONG).show()
+                Log.d("test", "This repository has already been recorded")
             }
         }
         subView.ownerEditText.setText("Omega-R")
@@ -95,10 +88,5 @@ class RepositoryActivity : BaseActivity() {
         }
         builder.show()
     }
-
-    private fun getuserData() {
-        //UserApi.get
-    }
-
 }
 

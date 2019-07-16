@@ -37,7 +37,6 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
         holder.itemView.ownerNameTextView.text = repository.ownerName
         holder.itemView.repositoryNameTextView.text = repository.repositoryName
         holder.itemView.repositoryCardView.setOnClickListener {
-
             holder.itemView.context.startActivity(GraphActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
         }
     }
