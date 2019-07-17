@@ -68,7 +68,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
                 if (it.owner == ownerName && it.repository == repositoryName) {
                     starsCount += it.likes
                     entries.add(BarEntry(it.likes.toFloat(), count))
-                    //labels.add(it.month + " " + it.year)
                     count += 1
                 }
             }
@@ -248,16 +247,9 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
                 if (statusCompare == false) {
                     setdataObjectbox(stargazer)
                 }
-
-
-                //entries.add(BarEntry(likes.toFloat(), count))
-                //labels.add(monthName + " " + it.value.year)
-                //count += 1
             }
-
         }
         showBarOb(ownerName, repositoryName)
-        //setBarchart(entries)
     }
 
 

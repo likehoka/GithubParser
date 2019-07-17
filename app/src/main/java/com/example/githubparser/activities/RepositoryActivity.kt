@@ -1,5 +1,6 @@
 package com.example.githubparser.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,17 @@ import kotlinx.android.synthetic.main.content_repository.*
 import kotlinx.android.synthetic.main.layout_dialog.view.*
 
 class RepositoryActivity : BaseActivity() {
+
+
+    override fun onDestroy() {
+        val intent = Intent(this, MyService::class.java)
+        if (this != null) {
+            this.startService(intent)
+        }
+        Log.d("test", "Destroy Service" )
+        super.onDestroy()
+    }
+
     private val adapter = RepositoryAdapter()
     var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
 
@@ -25,6 +37,14 @@ class RepositoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
         setSupportActionBar(toolbar)
+
+        val intent = Intent(this, MyService::class.java)
+        if (this != null) {
+            this.startService(intent)
+        }
+
+
+
         if (getDataBase().size != 0 || getDataBase().size != null) {
             adapter.addAllItemRepository(getDataBase())
         }
