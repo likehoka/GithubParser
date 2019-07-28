@@ -47,5 +47,6 @@ dependencies {
     implementation 'me.ithebk:barchart:0.9'
 
     kapt "io.objectbox:objectbox-processor:$objectboxVersion"
+    implementation 'android.arch.work:work-runtime:1.0.0-alpha13'
 
 }

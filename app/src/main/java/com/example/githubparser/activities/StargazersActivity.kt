@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.R
 import com.example.githubparser.adapters.StargazersAdapter
@@ -20,7 +21,6 @@ import retrofit2.Response
 import java.util.*
 
 class StargazersActivity : BaseActivity() {
-    var counterStargazers: Long = 1
     var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
 
     companion object {
@@ -40,25 +40,11 @@ class StargazersActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        stargazersRecyclerView.layoutManager = LinearLayoutManager(this)
+        stargazersRecyclerView.layoutManager = LinearLayoutManager(this) as RecyclerView.LayoutManager?
         val ownerNameText = intent.getStringExtra("ownerName")
         val repositoryNameText = intent.getStringExtra("repositoryName")
         val stringDateText = intent.getStringExtra("stringDate")
         Log.d("test", "${ownerNameText}, ${repositoryNameText}, ${stringDateText}")
-
-        /*
-        val listValue: List<String> = stargazers!!.username.split(",").map { it -> it.trim() }
-        listValue.forEach {
-            Log.d("test", "ALL USERS: " + it)
-        }
-        */
-
-        /*
-        refreshLayout.setOnRefreshListener {
-            fetchStargazers(ownerNameText, repositoryNameText, stringDateText)
-        }
-        fetchStargazers(ownerNameText, repositoryNameText, stringDateText)
-        */
         showStargazers(ownerNameText, repositoryNameText, stringDateText)
     }
 
@@ -83,6 +69,8 @@ class StargazersActivity : BaseActivity() {
             stargazersRecyclerView.adapter = StargazersAdapter(listValue)
         }
     }
+
+
         /*
         private fun fetchStargazers(ownerName: String, repositoryName: String, stringDate: String) {
             refreshLayout.isRefreshing = true
