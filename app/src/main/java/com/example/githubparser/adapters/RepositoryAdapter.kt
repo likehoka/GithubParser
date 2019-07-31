@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.model.Repository
 import com.example.githubparser.R
 import com.example.githubparser.activities.GraphActivity
+import io.objectbox.kotlin.boxFor
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
     private val repositoryList: MutableList<Repository> = mutableListOf()
+
 
     fun addItemRepository(repository: Repository) {
         repositoryList.add(0, repository)

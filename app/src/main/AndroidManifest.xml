@@ -13,6 +13,11 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".push.ViewReminderActivity">
+        </activity>
+        <activity android:name=".activities.PushActivity">
+        </activity>
+
         <service
                 android:name=".activities.MyService"
                 android:enabled="true"

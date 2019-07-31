@@ -9,8 +9,8 @@ import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.api.StargazersApi
 import com.example.githubparser.api.StargazersList
 import com.example.githubparser.model.Repository
-import com.example.githubparser.model.Stargazers
 import com.github.mikephil.charting.data.BarEntry
+import io.objectbox.BoxStore.context
 import io.objectbox.kotlin.boxFor
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,14 +39,14 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
 
     private fun workMethod() {
         getRepositories().forEach {
-            Log.d("test", "Owner: " + it.ownerName +" Repos: " + it.repositoryName)
+            Log.d("test", "Owner: " + it.ownerName +" Repos: " + it.repositoryName + " id: " + it.id)
             thread {
-                fetchStargazers(it.ownerName, it.repositoryName, counterStargazers)
+                fetchStargazers(it.ownerName, it.repositoryName, it.id, counterStargazers)
             }
         }
     }
 
-    private fun fetchStargazers(ownerName: String, repositoryName: String, counterStargazers: Long) {
+    private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
         //val notes = UsersGetAll().getStargazersObjectbox()
         if (UsersGetAll().getStargazersObjectbox() != null) {
             val entries = ArrayList<BarEntry>()
@@ -60,12 +60,12 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 }
             }
             if (entries.size != 0) {
-                fetchStargazersRetrofit(ownerName, repositoryName, ((starsCount / 100) + 1).toLong())
-            } else fetchStargazersRetrofit(ownerName, repositoryName, counterStargazers)
-        } else fetchStargazersRetrofit(ownerName, repositoryName, counterStargazers)
+                fetchStargazersRetrofit(ownerName, repositoryName, idOwner, ((starsCount / 100) + 1).toLong())
+            } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
+        } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
     }
 
-    private fun fetchStargazersRetrofit(ownerName: String, repositoryName: String, counterStargazers: Long) {
+    private fun fetchStargazersRetrofit(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
         this.counterStargazers = counterStargazers
         StargazersApi().getStargazers(ownerName, repositoryName, counterStargazers.toString())
             .enqueue(object : Callback<List<StargazersList>> {
@@ -78,20 +78,25 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     if (response.body() == null) {
                         Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
                     } else
-                        stargazersCounter(response.body(), ownerName, repositoryName)
+                        stargazersCounter(response.body(), ownerName, repositoryName, idOwner)
                 }
             })
     }
 
 
 
-    private fun stargazersCounter(body: List<StargazersList>?, ownerName: String, repositoryName: String) {
+    private fun stargazersCounter(
+        body: List<StargazersList>?,
+        ownerName: String,
+        repositoryName: String,
+        idOwner: Long
+    ) {
         //Здесь надо сделать обработку getAllUsers.compare(StargazersList)
         stargazersList += body!!
         sortStargazerslist
         if (body.size == 100) {
             counterStargazers += 1
-            fetchStargazers(ownerName, repositoryName, counterStargazers)
+            fetchStargazers(ownerName, repositoryName, idOwner, counterStargazers)
         } else if (body.size < 100) {
             stargazersList?.forEach {
                 val username = it.user.username
@@ -105,13 +110,13 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                         statusCompare = true
                     }
                 }
-                if (statusCompare == false) {
+                if (!statusCompare) {
                     sortStargazerslist += stargazer
                 }
             }
 
             sortStargazerslist?.let {
-                NewStarsgazers().sortDataToDatabase(DistributeStars().distributeStargazers(it))//, ownerName, repositoryName))//, ownerName, repositoryName)
+                NewStarsgazers().sortDataToDatabase(  DistributeStars().distributeStargazers(it), context as Context, idOwner, true)//, ownerName, repositoryName))//, ownerName, repositoryName)
             }
 
             sortStargazerslist = emptyList()

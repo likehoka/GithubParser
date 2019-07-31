@@ -13,4 +13,7 @@
     <string name="title_stargazers_activity">StargazersActivity</string>
     <string name="title_details_activity">DetailsActivity</string>
     <string name="title_graph_activity">GraphActivity</string>
+
+    <string name="channelName">Reminders</string>
+    <string name="channelDescription">Reminders you\'ve added</string>
 </resources>

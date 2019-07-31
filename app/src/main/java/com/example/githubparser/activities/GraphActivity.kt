@@ -1,11 +1,14 @@
 package com.example.githubparser.activities
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.example.githubparser.Database.objectbox.ObjectBox
+import com.example.githubparser.R
 import com.example.githubparser.api.StargazersApi
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -16,15 +19,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.example.githubparser.activities.StargazersActivity.Companion.createIntent
 import com.example.githubparser.api.StargazersList
-import com.example.githubparser.model.Stargazers
+import com.example.githubparser.model.Repository
 import com.example.githubparser.utils.DistributeStars
 import com.example.githubparser.utils.NewStarsgazers
 import com.example.githubparser.utils.UsersGetAll
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.interfaces.OnChartValueSelectedListener
 import io.objectbox.kotlin.boxFor
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -36,34 +37,62 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
     var sortStargazerslist: List<StargazersList> = emptyList()
     var counterStargazers: Long = 1
     val labels = ArrayList<String>()
+    var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
+
+    private fun getDataBase(): MutableList<Repository> {
+        return notesRepository.query().build().find()
+    }
     //val notes = UsersGetAll().getStargazersObjectbox()
 
     private var ownerNameText: String = ""
     private var repositoryNameText: String = ""
+    private var ownerId: Long = 0
 
     companion object {
         private const val EXTRA_OWNER_NAME = "ownerName"
         private const val EXTRA_REPOSITORY_NAME = "repositoryName"
 
-        fun createIntent(context: Context, ownerName: String, repositoryName: String): Intent {
+        fun createIntent(
+            context: Context,
+            ownerName: String,
+            repositoryName: String
+        ): Intent {
             return Intent(context, GraphActivity::class.java)
                 .putExtra(EXTRA_OWNER_NAME, ownerName)
                 .putExtra(EXTRA_REPOSITORY_NAME, repositoryName)
+
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.githubparser.R.layout.activity_graph)
-
         ownerNameText = intent.getStringExtra("ownerName")
         repositoryNameText = intent.getStringExtra("repositoryName")
         Log.d("test", "${ownerNameText}, ${repositoryNameText}")
-        fetchStargazers(ownerNameText, repositoryNameText, counterStargazers)
+
+        getDataBase().forEach {
+            if (it.ownerName == ownerNameText && it.repositoryName == repositoryNameText) {
+                ownerId = it.id
+            }
+        }
+
+        fetchStargazers(ownerNameText, repositoryNameText, ownerId, counterStargazers)
+/*
+        val builder = NotificationCompat.Builder(this)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("$ownerNameText")
+            .setContentText("Repository: $repositoryNameText")
+
+        val notification = builder.build()
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, notification)
+*/
+
     }
 
 
-    private fun fetchStargazers(ownerName: String, repositoryName: String, counterStargazers: Long) {
+    private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
         //val notes = UsersGetAll().getStargazersObjectbox()
         if (UsersGetAll().getStargazersObjectbox() != null) {
             val entries = ArrayList<BarEntry>()
@@ -77,9 +106,9 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
                 }
             }
             if (entries.size != 0) {
-                fetchStargazersRetrofit(ownerName, repositoryName, ((starsCount / 100) + 1).toLong())
-            } else fetchStargazersRetrofit(ownerName, repositoryName, counterStargazers)
-        } else fetchStargazersRetrofit(ownerName, repositoryName, counterStargazers)
+                fetchStargazersRetrofit(ownerName, repositoryName, idOwner, ((starsCount / 100) + 1).toLong())
+            } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
+        } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
     }
 
     private fun showBarOb(ownerName: String, repositoryName: String) {
@@ -99,7 +128,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
     }
 
 
-    private fun fetchStargazersRetrofit(ownerName: String, repositoryName: String, counterStargazers: Long) {
+    private fun fetchStargazersRetrofit(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
         this.counterStargazers = counterStargazers
         StargazersApi().getStargazers(ownerName, repositoryName, counterStargazers.toString())
             .enqueue(object : Callback<List<StargazersList>> {
@@ -112,18 +141,23 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
                     if (response.body() == null) {
                         Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
                     } else
-                        stargazersCounter(response.body(), ownerName, repositoryName)
+                        stargazersCounter(response.body(), ownerName, repositoryName, idOwner)
                 }
             })
     }
 
-    private fun stargazersCounter(body: List<StargazersList>?, ownerName: String, repositoryName: String) {
+    private fun stargazersCounter(
+        body: List<StargazersList>?,
+        ownerName: String,
+        repositoryName: String,
+        idOwner: Long
+    ) {
         //Здесь надо сделать обработку getAllUsers.compare(StargazersList)
         stargazersList += body!!
         sortStargazerslist
         if (body.size == 100) {
             counterStargazers += 1
-            fetchStargazers(ownerName, repositoryName, counterStargazers)
+            fetchStargazers(ownerName, repositoryName, idOwner, counterStargazers)
         } else if (body.size < 100) {
             stargazersList?.forEach {
                 val username = it.user.username
@@ -148,7 +182,8 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener {
                         it//,
                         //ownerName,
                         //repositoryName
-                    )//, ownerName, repositoryName
+                    ),//, ownerName, repositoryName
+                    this, idOwner, false
                 )
                 showBarOb(ownerName, repositoryName)
             }
