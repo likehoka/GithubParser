@@ -16,7 +16,6 @@ class DistributeStars {
         stargazer.forEach {
             val date = it.getDate()
             val userName = it.user
-            Log.d("test", "User: " + userName.username + " Date: " + date)
             val instance = Calendar.getInstance()
             instance.time = date
             val year = instance.get(Calendar.YEAR)

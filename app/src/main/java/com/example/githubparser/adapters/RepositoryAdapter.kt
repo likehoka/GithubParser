@@ -1,6 +1,5 @@
 package com.example.githubparser.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +16,19 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
 
 
     fun addItemRepository(repository: Repository) {
-        repositoryList.add(0, repository)
-        notifyItemInserted(0)
-        Log.d("test", "itemcount = {$itemCount}")
+        repositoryList.add(repositoryList.size, repository)
+        notifyItemInserted(repositoryList.size)
     }
 
     fun addAllItemRepository(notes: MutableList<Repository>) {
         repositoryList.addAll(notes)
+    }
+
+    fun deleteItemRepository(repository: Repository) {
+        repositoryList.remove(repository)
+        notifyDataSetChanged()
+        var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
+        notesRepository.remove(repository.id)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryAdapter.RepositoryViewHolder {
@@ -42,6 +47,7 @@ class RepositoryAdapter : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewH
         holder.itemView.repositoryCardView.setOnClickListener {
             holder.itemView.context.startActivity(GraphActivity.createIntent(holder.itemView.context, repository.ownerName, repository.repositoryName))
         }
+        holder.itemView.avatarRepository.setOnClickListener { deleteItemRepository(repository) }
     }
     class RepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }

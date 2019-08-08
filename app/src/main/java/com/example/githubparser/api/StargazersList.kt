@@ -11,7 +11,7 @@ class StargazersList(
     @SerializedName("starred_at")
     val stringDate: String,
     @SerializedName("documentation_url")
-    val documentation: String,
+    val documentation_url: String,
     @SerializedName("user")
     val user: User
 ) {

@@ -1,8 +1,6 @@
 package com.example.githubparser.model
 
 import com.google.gson.annotations.SerializedName
-import com.j256.ormlite.field.DatabaseField
-import com.j256.ormlite.table.DatabaseTable
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.relation.ToMany

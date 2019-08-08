@@ -15,7 +15,5 @@ class StargazersSize() {
         this.year = year
         this.month = month
         this.stargazersCounter += 1
-        Log.d("test", "setDataStargazer: year: ${this.year}, month: ${this.month}")
-        //return StargazersSize()
     }
 }

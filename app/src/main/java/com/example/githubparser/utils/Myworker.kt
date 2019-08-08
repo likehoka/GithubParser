@@ -28,7 +28,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     override fun doWork(): Result {
         workMethod()
         Log.d("test", "doWork: start")
-        TimeUnit.SECONDS.sleep(10)
+        TimeUnit.SECONDS.sleep(5)
         Log.d("test", "doWork: end")
         return Result.success()
     }
@@ -39,7 +39,6 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
 
     private fun workMethod() {
         getRepositories().forEach {
-            Log.d("test", "Owner: " + it.ownerName +" Repos: " + it.repositoryName + " id: " + it.id)
             thread {
                 fetchStargazers(it.ownerName, it.repositoryName, it.id, counterStargazers)
             }
@@ -74,7 +73,6 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 }
 
                 override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
-                    Log.d("test", response.body().toString())
                     if (response.body() == null) {
                         Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
                     } else

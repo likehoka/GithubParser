@@ -1,9 +1,9 @@
 package com.example.githubparser.activities
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
+import com.omegar.mvp.MvpAppCompatActivity
 
-@SuppressLint("Registered")
-open class BaseActivity : AppCompatActivity() {
+
+open class BaseActivity : MvpAppCompatActivity() {
 
 }

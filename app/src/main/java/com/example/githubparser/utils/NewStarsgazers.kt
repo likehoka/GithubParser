@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.R
 import com.example.githubparser.activities.GraphActivity
@@ -25,9 +24,7 @@ class NewStarsgazers {
         map: MutableMap<Int, MyClassYear>,
         context: Context,
         idOwner: Long,
-        statusService: Boolean = false//,
-        //ownerName: String,
-        //repositoryName: String
+        statusService: Boolean = false
     ) {
         map.forEach() {
             val year = it.value
@@ -38,57 +35,65 @@ class NewStarsgazers {
                 val repository = month.repositoryName
                 val monthName = month.monthName
                 val users = it.value.users
-                Log.d(
-                    "test",
-                    "Owner: " + owner + " Year: " + it.value.year + " Month: " + monthName + " Likes: " + likes + " Users: " + it.value.users
-                )
 
                 val stargazer = Stargazers(
                     owner = owner, repository = repository, username = users, likes = likes,
                     month = monthName, year = it.value.year.toString(), stringDate = monthName + " " + it.value.year
                 )
+
                 var statusCompare: Boolean = false
                 var stargazers: Stargazers? = null
                 getnoteObjectbox().forEach {
                     if (it.owner == stargazer.owner && it.repository == stargazer.repository && it.stringDate == stargazer.stringDate) {
                         it.likes += likes
                         it.username += ", $users"
-                        Log.d("test", "Условие выполнено")
                         stargazers = it
                         statusCompare = true
                         getnoteObjectbox().remove(it)
                     }
                 }
-                if (statusCompare){
+                if (statusCompare) {
                     stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
                     if (statusService) {
-
-
-
-                        val resultIntent = Intent(context, GraphActivity::class.java)
-                        resultIntent.putExtra("ownerName", stargazers!!.owner)
-                        resultIntent.putExtra("repositoryName", stargazers!!.repository)
-
-                        val resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT)
-
-                        val builder = NotificationCompat.Builder(context)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(stargazer.owner)
-                            .setContentText(stargazer.repository)
-                            .setContentIntent(resultPendingIntent)
-                            //.setAutoCancel(true)
-                        val notification = builder.build()
-                        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationManager.notify(idOwner.toInt(), notification)
+                        callGraphActivity(idOwner, stargazer, context)
                     }
                 }
 
                 if (!statusCompare) {
-                    UsersGetAll().setStargazersObjectbox(stargazer)
+                    if (statusService) {
+                        callGraphActivity(idOwner, stargazer, context)
+                    } else
+                        UsersGetAll().setStargazersObjectbox(stargazer)
                 }
             }
         }
+    }
+
+    private fun callGraphActivity(
+        idOwner: Long,
+        stargazer: Stargazers,
+        context: Context
+    ) {
+        Log.d("test", "Условие")
+        val resultIntent = Intent(context, GraphActivity::class.java)
+        resultIntent.putExtra("ownerName", stargazer.owner)
+        resultIntent.putExtra("repositoryName", stargazer.repository)
+
+        val resultPendingIntent = PendingIntent.getActivity(
+            context, idOwner.toInt(), resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val builder = NotificationCompat.Builder(context)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(stargazer.owner)
+            .setContentText(stargazer.repository)
+            .setContentIntent(resultPendingIntent)
+            .setAutoCancel(true)
+        val notification = builder.build()
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(idOwner.toInt(), notification)
     }
 
 }

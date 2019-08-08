@@ -9,9 +9,7 @@ class GraphCounter() {
         val yearNow: Int = month
         val monthNow: Int = year
 
-        Log.d("test", "stargazer Graph size: ${stargazers.size}")
         for (stargazer in stargazers) {
-            Log.d("test", "Graph List: ${stargazer.stringDate}")
         }
 
     }
