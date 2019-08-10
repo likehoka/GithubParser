@@ -106,8 +106,7 @@ class RepositoryActivity : BaseActivity(), ViewRepositoryActivity {
     private fun fetchRepos() {
         val inflater = LayoutInflater.from(this)
         subView = inflater.inflate(R.layout.layout_dialog, null)
-        var builder: AlertDialog.Builder
-        builder = AlertDialog.Builder(this)
+        var builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Title AlertDialog")
         builder.setMessage("Message AlertDialog")
         builder.setView(subView)

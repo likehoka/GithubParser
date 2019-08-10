@@ -16,7 +16,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.example.githubparser.activities.StargazersActivity.Companion.createIntent
 import com.example.githubparser.api.StargazersList
-import com.example.githubparser.model.ErrorMessage
 import com.example.githubparser.model.Repository
 import com.example.githubparser.mvp.ViewGraphActivity
 import com.example.githubparser.mvp.presenters.GraphActivityPresenter
@@ -37,16 +36,16 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     var entry: Entry? = null
     var indexBarchart: Int = 0
     var stargazersList: List<StargazersList> = emptyList()
-    var sortStargazerslist: List<StargazersList> = emptyList()
-    var errorList: List<ErrorMessage> = emptyList()
+    private var sortStargazerslist: List<StargazersList> = emptyList()
     var counterStargazers: Long = 1
-    val labels = ArrayList<String>()
+    private val labels = ArrayList<String>()
     var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
     private var ownerNameText: String = ""
     private var repositoryNameText: String = ""
     private var ownerId: Long = 0
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var graphActivityPresenter: GraphActivityPresenter
+
     companion object {
         private const val EXTRA_OWNER_NAME = "ownerName"
         private const val EXTRA_REPOSITORY_NAME = "repositoryName"
@@ -99,6 +98,8 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     }
 
     private fun showBarOb(ownerName: String, repositoryName: String) {
+
+        Log.d("test", " showBarOb(ownerName: String, repositoryName: String)")
         val entries = ArrayList<BarEntry>()
         var count = 0
         var starsCount = 0
@@ -129,21 +130,29 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
 
                 override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
                     Log.d("test", "Text Body: " + response.body().toString())
-                    if(response.message() != "Forbidden") {
+                    if (response.message() != "Forbidden") {
                         if (response.body() == null && stargazersList.size == 0) {
+                            Log.d("test", "(response.body() == null && stargazersList.size == 0) ")
                             graphActivityPresenter.failedRepository()
-                        }
-                        else
+                        } else {
+                            Log.d("test", "(response.body() == null && stargazersList.size == 0)  else")
                             stargazersCounter(response.body(), ownerName, repositoryName, idOwner, response)
+
+                        }
+
                     }
 
-                    if (response.message() == "Forbidden" && stargazersList.size != 0){
+                    if (response.message() == "Forbidden" && stargazersList.size == 0) {
+                        Log.d("test", "(response.message() == \"Forbidden\" && stargazersList.size == 0)")
+                        Toast.makeText(applicationContext, "Превышен лимит запросов", Toast.LENGTH_LONG).show()
+                        showBarOb(ownerName, repositoryName)
+                    }
+
+                    if (response.message() == "Forbidden" && stargazersList.size != 0) {
+                        Log.d("test", "(response.message() == \"Forbidden\" && stargazersList.size != 0)")
                         stargazersCounter(response.body(), ownerName, repositoryName, idOwner, response)
                         Toast.makeText(applicationContext, "Превышен лимит запросов", Toast.LENGTH_LONG).show()
-
                     }
-
-
                 }
             })
     }
@@ -156,35 +165,54 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         response: Response<List<StargazersList>>
     ) {
         if (body != null) {
-            stargazersList += body!!
+
+            stargazersList += body
+            Log.d("test", "if (body != null)" + " stargazersList.size: " + stargazersList.size)
+
         }
 
         sortStargazerslist
-        if (body!!.size == 100) {
+        if (body != null && body.size == 100) {
+            Log.d("test", " if (body != null && body.size == 100)")
             counterStargazers += 1
             fetchStargazers(ownerName, repositoryName, idOwner, counterStargazers)
-        } else if (body.size < 100 || response.message() == "Forbidden") {
-            stargazersList?.forEach {
-                val stargazer = it
-                it.owner = ownerName
-                it.repository = repositoryName
-                counterStargazers = 1
-                var statusCompare: Boolean = false
-                UsersGetAll().getallUsers(ownerName, repositoryName).forEach {
-                    if (stargazer.user.username == it) {
-                        statusCompare = true
-                    }
-                }
-                if (!statusCompare) {
-                    sortStargazerslist += stargazer
+        }
+        if (response.message() == "Forbidden") {
+            Log.d("test", "response.message() == Forbidden")
+            //if (body?.size!! < 100 )
+            //writeToBase(ownerName, repositoryName, idOwner)
+        }
+        if (body == null || body.size < 100) {
+            Log.d("test", "(body == null || body.size < 100)")
+            writeToBase(ownerName, repositoryName, idOwner)
+        }
+    }
+
+    fun writeToBase(ownerName: String, repositoryName: String, idOwner: Long) {
+        stargazersList?.forEach {
+            val stargazer = it
+            it.owner = ownerName
+            it.repository = repositoryName
+            counterStargazers = 1
+            var statusCompare: Boolean = false
+            UsersGetAll().getallUsers(ownerName, repositoryName).forEach {
+                if (stargazer.user.username == it) {
+                    statusCompare = true
                 }
             }
-            sortStargazerslist?.let {
-                NewStarsgazers().sortDataToDatabase(
-                    DistributeStars().distributeStargazers(it),
-                    this, idOwner, false)
-                showBarOb(ownerName, repositoryName)
+            if (!statusCompare) {
+                sortStargazerslist += stargazer
             }
+        }
+        Log.d("test", "I am here #1, sortStargazerslist.size " + sortStargazerslist.size)
+
+        sortStargazerslist?.let {
+            NewStarsgazers().sortDataToDatabase(
+                DistributeStars().distributeStargazers(it),
+                this, idOwner, false
+            )
+            showBarOb(ownerName, repositoryName)
+
         }
     }
 
@@ -219,8 +247,9 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
     }
 
-    override fun showBarChart(barChart: BarChart, data: BarData,entries: ArrayList<BarEntry>) {
+    override fun showBarChart(barChart: BarChart, data: BarData, entries: ArrayList<BarEntry>) {
         barChart.data = data // set the data and list of lables into chart
+        //barChart.data.addDataSet(data)
         barChart.setDrawValueAboveBar(true)
         barChart.isDoubleTapToZoomEnabled = false
         barChart.setTouchEnabled(true)
