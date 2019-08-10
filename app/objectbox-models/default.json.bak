@@ -1,0 +1,118 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "4:9083054156265071611",
+      "lastPropertyId": "3:633472356312766453",
+      "name": "Repository",
+      "properties": [
+        {
+          "id": "1:3872174499033828071",
+          "name": "id"
+        },
+        {
+          "id": "2:7930074565599574312",
+          "name": "ownerName"
+        },
+        {
+          "id": "3:633472356312766453",
+          "name": "repositoryName"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:7627290998764229716",
+      "lastPropertyId": "8:5047699371310993925",
+      "name": "Stargazers",
+      "properties": [
+        {
+          "id": "1:1923450895992394171",
+          "name": "id"
+        },
+        {
+          "id": "2:6518741941567510323",
+          "name": "stringDate"
+        },
+        {
+          "id": "3:8232245427403842033",
+          "name": "owner"
+        },
+        {
+          "id": "4:5147008988713893432",
+          "name": "repository"
+        },
+        {
+          "id": "5:5122165721134842675",
+          "name": "username"
+        },
+        {
+          "id": "8:5047699371310993925",
+          "name": "likes"
+        }
+      ],
+      "relations": [
+        {
+          "id": "2:7631192876246456060",
+          "name": "user"
+        }
+      ]
+    },
+    {
+      "id": "6:6091775602779123111",
+      "lastPropertyId": "4:3346384488790881065",
+      "name": "User",
+      "properties": [
+        {
+          "id": "1:3933351374738732122",
+          "name": "id"
+        },
+        {
+          "id": "2:4628270639695791308",
+          "name": "username"
+        },
+        {
+          "id": "3:7775809881096012606",
+          "name": "avatarUrl"
+        },
+        {
+          "id": "4:3346384488790881065",
+          "name": "htmlUrl"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "6:6091775602779123111",
+  "lastIndexId": "0:0",
+  "lastRelationId": "2:7631192876246456060",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [
+    9013383559249505429,
+    523759090330259187,
+    8363860411198499977
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    2909091156736293966,
+    4368667328151684282,
+    5194435893084428554,
+    552488555658694400,
+    7090950317664221377,
+    5992433679396491410,
+    8663316217332881552,
+    6561421941214548459,
+    3982779298707340676,
+    4410937294962808458,
+    2578909623837635452,
+    7375300911655222457
+  ],
+  "retiredRelationUids": [
+    8625985014409525374
+  ],
+  "version": 1
+}
