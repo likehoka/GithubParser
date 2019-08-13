@@ -45,6 +45,8 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     private var ownerId: Long = 0
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var graphActivityPresenter: GraphActivityPresenter
+    private val noteStargazers = UsersGetAll().getStargazersObjectbox()
+    var barDataSet: BarDataSet? = null
 
     companion object {
         private const val EXTRA_OWNER_NAME = "ownerName"
@@ -68,6 +70,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         repositoryNameText = intent.getStringExtra("repositoryName")
         Log.d("test", "${ownerNameText}, ${repositoryNameText}")
 
+        //вытаскиваем репозиторий из бд
         getDataBase().forEach {
             if (it.ownerName == ownerNameText && it.repositoryName == repositoryNameText) {
                 ownerId = it.id
@@ -78,11 +81,11 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
 
 
     private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
-        if (UsersGetAll().getStargazersObjectbox() != null) {
+        if (noteStargazers != null) {
             val entries = ArrayList<BarEntry>()
             var count = 0
             var starsCount = 0
-            UsersGetAll().getStargazersObjectbox().forEach {
+            noteStargazers.forEach {
                 if (it.owner == ownerName && it.repository == repositoryName) {
                     starsCount += it.likes
                     entries.add(BarEntry(it.likes.toFloat(), count))
@@ -91,11 +94,14 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             }
 
             if (entries.size != 0) {
+                //добавить сюда изначальную загрузку из БД
+
                 fetchStargazersRetrofit(ownerName, repositoryName, idOwner, ((starsCount / 100) + 1).toLong())
             } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
         } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
-
     }
+
+
 
     private fun showBarOb(ownerName: String, repositoryName: String) {
 
@@ -139,7 +145,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                             stargazersCounter(response.body(), ownerName, repositoryName, idOwner, response)
 
                         }
-
                     }
 
                     if (response.message() == "Forbidden" && stargazersList.size == 0) {
@@ -165,13 +170,11 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         response: Response<List<StargazersList>>
     ) {
         if (body != null) {
-
             stargazersList += body
             Log.d("test", "if (body != null)" + " stargazersList.size: " + stargazersList.size)
-
         }
 
-        sortStargazerslist
+            //sortStargazerslist
         if (body != null && body.size == 100) {
             Log.d("test", " if (body != null && body.size == 100)")
             counterStargazers += 1
@@ -189,6 +192,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     }
 
     fun writeToBase(ownerName: String, repositoryName: String, idOwner: Long) {
+        //stargazersList.subList(stargazersList.size-100, stargazersList.size).forEach {}
         stargazersList?.forEach {
             val stargazer = it
             it.owner = ownerName
@@ -217,8 +221,8 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     }
 
     private fun setBarchart(entries: ArrayList<BarEntry>) {
-        val barDataSet = BarDataSet(entries, "Likes")
-        barDataSet.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
+        barDataSet = BarDataSet(entries, "Likes")
+        barDataSet!!.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
         val data = BarData(labels, barDataSet)
         graphActivityPresenter.setBarChartEntries(barChart, data, entries)
     }
@@ -260,4 +264,5 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         barChart.animateY(0)
     }
 }
+
 

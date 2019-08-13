@@ -22,8 +22,7 @@ class UsersGetAll {
     }
 
     fun getStargazersObjectbox(): MutableList<Stargazers> {
-        val notes = notesStargazers.query().build().find()
-        return notes
+        return notesStargazers.query().build().find()
     }
 
     fun setStargazersObjectbox(stargazer: Stargazers) {
