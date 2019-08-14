@@ -107,8 +107,7 @@ class RepositoryActivity : BaseActivity(), ViewRepositoryActivity {
         val inflater = LayoutInflater.from(this)
         subView = inflater.inflate(R.layout.layout_dialog, null)
         var builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Title AlertDialog")
-        builder.setMessage("Message AlertDialog")
+        builder.setTitle("Github Parser")
         builder.setView(subView)
         builder.setOnDismissListener { repositoryActivityPresenter.statusCloseAlertDialog() }
         builder.setPositiveButton("Ok") { dialog, which ->
