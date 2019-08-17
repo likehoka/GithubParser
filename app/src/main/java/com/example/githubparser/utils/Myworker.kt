@@ -103,7 +103,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 it.repository = repositoryName
                 counterStargazers = 1
                 var statusCompare: Boolean = false
-                UsersGetAll().getallUsers(ownerName, repositoryName).forEach {
+                UsersGetAll().getallUserss(ownerName, repositoryName).forEach {
                     if (stargazer.user.username == it) {
                         statusCompare = true
                     }

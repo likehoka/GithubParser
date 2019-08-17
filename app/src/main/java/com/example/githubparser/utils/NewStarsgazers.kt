@@ -34,7 +34,7 @@ class NewStarsgazers {
                 val owner = month.ownerName
                 val repository = month.repositoryName
                 val monthName = month.monthName
-                val users = it.value.users
+                val users = it.value.user
 
                 val stargazer = Stargazers(
                     owner = owner, repository = repository, username = users, likes = likes,
@@ -52,7 +52,8 @@ class NewStarsgazers {
                         getnoteObjectbox().remove(it)
                     }
                 }
-                if (statusCompare) {
+                if (statusCompare) { //если надо изменить базу то пишем данные в базу
+                    Log.d("test", "if (statusCompare) {")
                     stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
                     if (statusService) {
                         callGraphActivity(idOwner, stargazer, context)
@@ -60,10 +61,14 @@ class NewStarsgazers {
                 }
 
                 if (!statusCompare) {
+                    Log.d("test", "if (!statusCompare) {")
+
                     if (statusService) {
                         callGraphActivity(idOwner, stargazer, context)
-                    } else
+                    } else  {
                         UsersGetAll().setStargazersObjectbox(stargazer)
+                        Log.d("test", "UsersGetAll().setStargazersObjectbox(stargazer) = " + stargazer.username)
+                    }
                 }
             }
         }

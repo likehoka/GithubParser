@@ -243,6 +243,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
 //то условие
                 if(countStars < 100) {
                     UsersGetAll().getallUserss(ownerName, repositoryName).forEach {
+                        Log.d("test", "if(countStars < 100) {")
                         if (stargazer.user.username == it) {
                             statusCompare = true
                         }
@@ -250,7 +251,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                 }
 
                 if (countStars >= 100) {
-
+                    Log.d("test", "if (countStars >= 100) {")
                     (allUsersDB.subList(countStars - 100, countStars)).forEach {
                         if (stargazer.user.username == it) {
                             statusCompare = true
@@ -258,7 +259,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                     }
                 }
                 Log.d("test", " statusCompare " + statusCompare)
-                if (!statusCompare) {
+                if (statusCompare == false) {
                     sortStargazerslist += stargazer
                 }
             }

@@ -1,6 +1,5 @@
 package com.example.githubparser.utils
 
-import android.util.Log
 import com.example.githubparser.api.StargazersList
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,9 +38,9 @@ class DistributeStars {
             monthhhh.ownerName = it.owner
             monthhhh.repositoryName = it.repository
 
-            if (monthhhh.users == "") {
-                monthhhh.users += userName.username
-            } else monthhhh.users += ", " + userName.username
+            if (monthhhh.user == "") {
+                monthhhh.user += userName.username
+            } else monthhhh.user += ", " + userName.username
 
 
             val sdf = SimpleDateFormat("MMM")

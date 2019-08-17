@@ -145,4 +145,3 @@ class RepositoryActivity : BaseActivity(), ViewRepositoryActivity {
         return status
     }
 }
-

@@ -10,5 +10,5 @@ class MyClassMonth {
     var year: Int = 0
     var monthName: String = ""
     var likes = 0
-    var users: String = ""
+    var user: String = ""
 }
