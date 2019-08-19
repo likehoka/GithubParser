@@ -26,32 +26,24 @@ class NewStarsgazers {
         idOwner: Long,
         statusService: Boolean = false
     ) {
-        map.forEach() {
-            val year = it.value
-            it.value.monthMap.forEach {
-                val month = it.value
-                val likes = month.likes
-                val owner = month.ownerName
-                val repository = month.repositoryName
-                val monthName = month.monthName
-                val users = it.value.user
-
+        map.forEach() { year ->
+            year.value.monthMap.forEach { yearValue ->
                 val stargazer = Stargazers(
-                    owner = owner, repository = repository, username = users, likes = likes,
-                    month = monthName, year = it.value.year.toString(), stringDate = monthName + " " + it.value.year
+                    owner = yearValue.value.ownerName, repository = yearValue.value.repositoryName, username = yearValue.value.user,
+                    likes = yearValue.value.likes, month = yearValue.value.monthName, year = yearValue.value.year.toString(), stringDate = yearValue.value.monthName + " " + yearValue.value.year
                 )
-
                 var statusCompare: Boolean = false
                 var stargazers: Stargazers? = null
                 getnoteObjectbox().forEach {
                     if (it.owner == stargazer.owner && it.repository == stargazer.repository && it.stringDate == stargazer.stringDate) {
-                        it.likes += likes
-                        it.username += ", $users"
+                        it.likes += yearValue.value.likes
+                        it.username += ", " + yearValue.value.user
                         stargazers = it
                         statusCompare = true
                         getnoteObjectbox().remove(it)
                     }
                 }
+
                 if (statusCompare) { //если надо изменить базу то пишем данные в базу
                     Log.d("test", "if (statusCompare) {")
                     stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
@@ -59,7 +51,6 @@ class NewStarsgazers {
                         callGraphActivity(idOwner, stargazer, context)
                     }
                 }
-
                 if (!statusCompare) {
                     Log.d("test", "if (!statusCompare) {")
 

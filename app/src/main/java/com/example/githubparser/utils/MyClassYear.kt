@@ -11,4 +11,5 @@ class MyClassMonth {
     var monthName: String = ""
     var likes = 0
     var user: String = ""
+    //var users: MutableSet<String>? = null
 }

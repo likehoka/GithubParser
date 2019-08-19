@@ -144,16 +144,13 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                         } else {
                             Log.d("test", "(response.body() == null && stargazersList.size == 0)  else")
                             stargazersCounter(response.body(), ownerName, repositoryName, idOwner, response)
-
                         }
                     }
-
                     if (response.message() == "Forbidden" && stargazersList.size == 0) {
                         Log.d("test", "(response.message() == \"Forbidden\" && stargazersList.size == 0)")
                         Toast.makeText(applicationContext, "Превышен лимит запросов", Toast.LENGTH_LONG).show()
                         showBarOb(ownerName, repositoryName)
                     }
-
                     if (response.message() == "Forbidden" && stargazersList.size != 0) {
                         Log.d("test", "(response.message() == \"Forbidden\" && stargazersList.size != 0)")
                         //stargazersCounter(response.body(), ownerName, repositoryName, idOwner, response)
@@ -178,7 +175,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             Log.d("test", "if (body != null) counterStargazers " + counterStargazers)
             Log.d("test", "if (body != null)" + " stargazersList.size: " + stargazersList.size)
         }
-
         //sortStargazerslist
         if (body != null && body.size == 100) {
             Log.d("test", " if (body != null && body.size == 100)")
@@ -195,12 +191,12 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         if (response.message() == "Forbidden") {
             Log.d("test", "response.message() == Forbidden")
             compareBaseStatus = false
-            if (stargazersList.isNotEmpty()){
+            if (stargazersList.isNotEmpty()) {
                 writeToBase(ownerName, repositoryName, idOwner, compareBaseStatus)
             }
 
         }
-        if (body == null){ //body.size < 100) {
+        if (body == null) { //body.size < 100) {
             Log.d("test", "(body == null || body.size < 100)")
             Toast.makeText(applicationContext, "Загрузка завершена", Toast.LENGTH_LONG).show()
             compareBaseStatus = false
@@ -228,39 +224,29 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         idOwner: Long,
         compareBS: Boolean
     ) {
-        val allUsersDB = UsersGetAll().getallUserss(ownerName, repositoryName)
-        val countStars: Int = allUsersDB.size
-        //sortStargazerslist = emptyList()
+        val countStars: Int = UsersGetAll().getallUsersss(ownerName, repositoryName)!!.size
         Log.d("test", "countStars " + countStars)
-        Log.d("test", "compareBS " + compareBS +" stargazersList.size" + stargazersList.size)
-        if (!compareBS){
+        Log.d("test", "compareBS " + compareBS + " stargazersList.size" + stargazersList.size)
+        if (!compareBS) {
             stargazersList?.forEach {
                 val stargazer = it
                 it.owner = ownerName
                 it.repository = repositoryName
-                //counterStargazers = 1
-                var statusCompare: Boolean = false
-//то условие
-                if(countStars < 100) {
-                    UsersGetAll().getallUserss(ownerName, repositoryName).forEach {
+                if (countStars == 0) {
+                    sortStargazerslist += stargazer
+                }
+
+                if (countStars < 100 && countStars != 0) {
+                    Log.d("test", "if (countStars < 100 && countStars !=0) {")
+                    if (UsersGetAll().getallUsersss(ownerName, repositoryName)!!.contains(stargazer.user.username)){
                         Log.d("test", "if(countStars < 100) {")
-                        if (stargazer.user.username == it) {
-                            statusCompare = true
-                        }
-                    }
+                    } else sortStargazerslist += stargazer
                 }
 
                 if (countStars >= 100) {
-                    Log.d("test", "if (countStars >= 100) {")
-                    (allUsersDB.subList(countStars - 100, countStars)).forEach {
-                        if (stargazer.user.username == it) {
-                            statusCompare = true
-                        }
-                    }
-                }
-                Log.d("test", " statusCompare " + statusCompare)
-                if (statusCompare == false) {
-                    sortStargazerslist += stargazer
+                    if (UsersGetAll().getallUsersss(ownerName, repositoryName)!!.contains(stargazer.user.username)){
+                        Log.d("test", "if (countStars >= 100) {")
+                    } else sortStargazerslist += stargazer
                 }
             }
         } else stargazersList.forEach {

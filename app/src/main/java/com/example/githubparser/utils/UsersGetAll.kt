@@ -14,6 +14,7 @@ class UsersGetAll {
         var returnList: List<String> = listOf()
         notes.forEach {
             if (it.owner == ownerName && it.repository == repositoryName) {
+                //listSet = it.usernames
                 listValue +=  it.username.split(",").map { it -> it.trim() }
             }
         }
@@ -30,8 +31,34 @@ class UsersGetAll {
             }
             Log.d("test", "if (listValue.size <= 100) {")
         }
+
         Log.d("test", "return returnList.size = " + returnList.size)
         return returnList
+    }
+
+    fun getallUsersss(ownerName: String, repositoryName: String): MutableSet<String>? {
+        val notes = getStargazersObjectbox()
+        var listValue: List<String> = listOf()
+        var listSet: MutableSet<String>? = mutableSetOf()
+        notes.forEach {
+            if (it.owner == ownerName && it.repository == repositoryName) {
+                //listValue +=  it.username.split(",").map { it -> it.trim() }
+                listSet?.addAll(it.username.split(",").map { it -> it.trim() })
+            }
+        }
+
+        if (listValue.size > 100){
+            listValue.subList(listValue.size-100, listValue.size).forEach {
+                listSet!!.add(it)
+            }
+        }
+
+        if (listValue.size <= 100) {
+            listValue.forEach {
+                listSet!!.add(it)
+            }
+        }
+        return listSet
     }
 
 
@@ -42,36 +69,4 @@ class UsersGetAll {
     fun setStargazersObjectbox(stargazer: Stargazers) {
         notesStargazers.put(stargazer)
     }
-
-    fun getallUsers(ownerName: String, repositoryName: String): List<String> {
-        val notes = getStargazersObjectbox()
-        var starsCount: Int = 0
-        var listValue: List<String> = listOf()
-        notes.forEach {
-            if (it.owner == ownerName && it.repository == repositoryName) {
-                //starsCount += it.likes
-                val listValueCash: List<String> = it.username.split(",").map { it -> it.trim() }
-                listValue += listValueCash
-                if (listValue.size > 100){
-                    var returnList: List<String> = listOf()
-                    listValue.subList(listValue.size-100, listValue.size).forEach {
-                        returnList += it
-                    }
-                    return returnList
-                }
-
-                if (listValue.size <= 100) {
-                    var returnList: List<String> = listOf()
-                    listValue.forEach {
-                        returnList += it
-                    }
-                    return returnList
-                }
-
-            }
-        }
-        return listValue
-    }
-
-
 }
