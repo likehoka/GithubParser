@@ -42,8 +42,8 @@ class UsersGetAll {
         var listSet: MutableSet<String>? = mutableSetOf()
         notes.forEach {
             if (it.owner == ownerName && it.repository == repositoryName) {
-                //listValue +=  it.username.split(",").map { it -> it.trim() }
-                listSet?.addAll(it.username.split(",").map { it -> it.trim() })
+                listValue +=  it.username.split(",").map { it -> it.trim() }
+                //listSet?.addAll(it.username.split(",").map { it -> it.trim() })
             }
         }
 

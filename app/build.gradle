@@ -49,7 +49,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'org.quanqi:mpandroidchart:1.7.5'
     implementation 'me.ithebk:barchart:0.9'
-
+    implementation 'com.github.Omega-R:OmegaBase:1.1.0'
 
     implementation 'com.github.Omega-R.OmegaMoxy:moxy-androidx:1.5.7'
     kapt 'com.github.Omega-R.OmegaMoxy:moxy-compiler:1.5.7'
