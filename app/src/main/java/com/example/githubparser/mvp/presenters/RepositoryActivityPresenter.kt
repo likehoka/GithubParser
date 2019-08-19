@@ -1,34 +1,38 @@
 package com.example.githubparser.mvp.presenters
 
 import android.content.DialogInterface
-import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.adapters.RepositoryAdapter
-import com.example.githubparser.mvp.ViewRepositoryActivity
+import com.example.githubparser.model.Repository
+import com.example.githubparser.mvp.RepositoryView
+import com.omega_r.base.mvp.presenters.OmegaPresenter
 import com.omegar.mvp.InjectViewState
-import com.omegar.mvp.MvpPresenter
 
 @InjectViewState
-class RepositoryActivityPresenter : MvpPresenter<ViewRepositoryActivity>() {
-    fun showAlertDialog() {
-        viewState.onShowAlertDialog()
-    }
-
+class RepositoryActivityPresenter : OmegaPresenter<RepositoryView>() {
     fun closeAlertDialog(dialog: DialogInterface) {
         viewState.onCloseAlertDialog(dialog)
     }
 
+    fun addAdapterItem(
+        repository: Repository,
+        adapter: RepositoryAdapter
+    ) {
+        viewState.setList(adapter.list.plus(repository), repository)
+    }
+
+    fun requestOpenAddDialog() {
+        viewState.showAddDialog()
+    }
+
+    fun requestDeleteRepository(repository: Repository) {
+        viewState.onDeleteClicked(repository)
+    }
+
+    fun showAdapter(dataBase: List<Repository>) {
+        viewState.onShowAdapter(dataBase)
+    }
+
     fun showTextAlertDialog(ownerText: String, repositoryText: String) {
         viewState.onShowAlertDialogText(ownerText, repositoryText)
-    }
-
-    fun statusCloseAlertDialog() {
-        viewState.statusAlertDialog()
-    }
-
-    fun showAdapter(
-        adapter: RepositoryAdapter,
-        repositoryRecyclerView: RecyclerView
-    ) {
-        viewState.onShowAdapter()
     }
 }

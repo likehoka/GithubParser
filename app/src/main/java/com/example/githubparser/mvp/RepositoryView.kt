@@ -1,16 +1,33 @@
 package com.example.githubparser.mvp
 
+import android.content.DialogInterface
 import com.example.githubparser.model.Repository
-import com.omegar.mvp.MvpView
-import com.omegar.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.omegar.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.omegar.mvp.viewstate.strategy.StateStrategyType
+import com.omega_r.base.mvp.views.OmegaView
+import com.omegar.mvp.viewstate.strategy.*
 
-interface RepositoryView : MvpView {
+interface RepositoryView : OmegaView {
 
-    @StateStrategyType(AddToEndSingleStrategy::class)
-    fun setList(list: List<Repository>)
+    @StateStrategyType(SingleStateStrategy::class)
+    fun setList(
+        list: List<Repository>,
+        repository: Repository
+    )
+
+    @StateStrategyType(SingleStateStrategy::class)
+    fun showAddDialog()
+
+    @StateStrategyType(SingleStateStrategy::class)
+    fun onCloseAlertDialog(dialog: DialogInterface)
+
+    @StateStrategyType(AddToEndStrategy::class)
+    fun onShowAlertDialogText(ownerText: String, repositoryText: String)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
-    fun showAddDialog()
+    fun onDeleteClicked(repository: Repository)
+
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun addAdapterRepository()
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun onShowAdapter(dataBase: List<Repository>)
 }
