@@ -35,8 +35,9 @@ class DistributeStars {
             monthhhh.likes += 1
             monthhhh.monthName = (instance.time.month + 1).toString()
             monthhhh.year = year
-            monthhhh.ownerName = it.owner
-            monthhhh.repositoryName = it.repository
+            monthhhh.ownerId = it.idOwner
+            //monthhhh.ownerName = it.owner
+            //monthhhh.repositoryName = it.repository
 
             if (monthhhh.user == "") {
                 monthhhh.user += userName.username

@@ -8,12 +8,12 @@ import io.objectbox.kotlin.boxFor
 class UsersGetAll {
     var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
 
-    fun getallUserss(ownerName: String, repositoryName: String): List<String> {
+    fun getallUserss(idOwner: Long): List<String> {
         val notes = getStargazersObjectbox()
         var listValue: List<String> = listOf()
         var returnList: List<String> = listOf()
         notes.forEach {
-            if (it.owner == ownerName && it.repository == repositoryName) {
+            if (it.idRepository == idOwner) {
                 //listSet = it.usernames
                 listValue +=  it.username.split(",").map { it -> it.trim() }
             }
@@ -36,12 +36,12 @@ class UsersGetAll {
         return returnList
     }
 
-    fun getallUsersss(ownerName: String, repositoryName: String): MutableSet<String>? {
+    fun getallUsersss(ownerId: Long): MutableSet<String>? {
         val notes = getStargazersObjectbox()
         var listValue: List<String> = listOf()
         var listSet: MutableSet<String>? = mutableSetOf()
         notes.forEach {
-            if (it.owner == ownerName && it.repository == repositoryName) {
+            if (it.idRepository == ownerId) {
                 listValue +=  it.username.split(",").map { it -> it.trim() }
                 //listSet?.addAll(it.username.split(",").map { it -> it.trim() })
             }

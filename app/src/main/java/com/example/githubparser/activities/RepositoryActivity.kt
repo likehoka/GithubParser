@@ -4,16 +4,19 @@ package com.example.githubparser.activities
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
+import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.R
 import com.example.githubparser.adapters.RepositoryAdapter
 import com.example.githubparser.model.Repository
 import com.example.githubparser.mvp.RepositoryView
 import com.example.githubparser.mvp.presenters.RepositoryActivityPresenter
+import com.example.githubparser.utils.MyWorker
 import com.example.githubparser.utils.repositoryutils.CompareRepository
 import com.example.githubparser.utils.repositoryutils.RepositoryBase
 import com.omega_r.base.components.OmegaActivity
@@ -22,8 +25,10 @@ import com.omegar.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_repository.*
 import kotlinx.android.synthetic.main.content_repository.*
 import kotlinx.android.synthetic.main.layout_dialog.view.*
+import java.util.concurrent.TimeUnit
 
 class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Callback {
+
     private lateinit var subView: View
     @InjectPresenter
     override lateinit var presenter: RepositoryActivityPresenter
@@ -54,19 +59,20 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
         adapter.list = notes
     }
 
+    override fun removeList(list: List<Repository>, repository: Repository) {
+        adapter.list = list
+        adapter.refreshAdapter()
+        RepositoryBase().deleteData(repository)
+    }
+
     override fun setList(list: List<Repository>,repository: Repository
     ) {
         adapter.list = list
-        adapter.refreshAdapter()
         RepositoryBase().putDataBase(repository)
     }
 
-    override fun addAdapterRepository() {
-        adapter.refreshAdapter()
-    }
-
     override fun onDeleteClicked(repository: Repository) {
-        presenter.requestDeleteRepository(repository)
+        presenter.removeAdapterItem(repository, adapter)
     }
 
     override fun onOpenClicked(repository: Repository) {
@@ -108,7 +114,13 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
             val ownerText = view?.ownerEditText?.text.toString()
             val repositoryText = view?.repositoryEditText?.text.toString()
             presenter.showTextAlertDialog(ownerText, repositoryText)
+        workManager()
         super.onDestroy()
+    }
+
+    private fun workManager() {
+        val myWorkRequest = PeriodicWorkRequest.Builder(MyWorker::class.java, 30, TimeUnit.MINUTES).build()
+        WorkManager.getInstance().enqueue(myWorkRequest)
     }
 }
 

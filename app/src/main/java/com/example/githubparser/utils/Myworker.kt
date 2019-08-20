@@ -46,13 +46,12 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     }
 
     private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
-        //val notes = UsersGetAll().getStargazersObjectbox()
         if (UsersGetAll().getStargazersObjectbox() != null) {
             val entries = ArrayList<BarEntry>()
             var count: Int = 0
             var starsCount: Int = 0
             UsersGetAll().getStargazersObjectbox().forEach {
-                if (it.owner == ownerName && it.repository == repositoryName) {
+                if (it.idRepository == idOwner) {
                     starsCount += it.likes
                     entries.add(BarEntry(it.likes.toFloat(), count))
                     count += 1
@@ -103,7 +102,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 it.repository = repositoryName
                 counterStargazers = 1
                 var statusCompare: Boolean = false
-                UsersGetAll().getallUserss(ownerName, repositoryName).forEach {
+                UsersGetAll().getallUserss(idOwner).forEach {
                     if (stargazer.user.username == it) {
                         statusCompare = true
                     }
@@ -114,7 +113,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
             }
 
             sortStargazerslist?.let {
-                NewStarsgazers().sortDataToDatabase(  DistributeStars().distributeStargazers(it), context as Context, idOwner, true)//, ownerName, repositoryName))//, ownerName, repositoryName)
+                NewStarsgazers().sortDataToDatabase(ownerName, repositoryName,  DistributeStars().distributeStargazers(it), context as Context, idOwner, true)//, ownerName, repositoryName))//, ownerName, repositoryName)
             }
 
             sortStargazerslist = emptyList()

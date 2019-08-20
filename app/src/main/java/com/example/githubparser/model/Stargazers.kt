@@ -9,8 +9,9 @@ import java.util.*
 @Entity
 class Stargazers(
     @Id var id: Long = 0,
-    val owner: String = "",
-    val repository: String = "",
+    val idRepository: Long = 0,
+    //val owner: String = "",
+    //val repository: String = "",
     val stringDate: String = "",
     val month: String = "",
     val year: String = "",
@@ -26,15 +27,16 @@ class Stargazers(
 
     constructor(
         id: Long = 0,
-        owner: String = "",
-        repository: String = "",
+        idRepository: Long = 0,
+        //owner: String = "",
+        //repository: String = "",
         stringDate: String = "",
         month: String = "",
         year: String = "",
         likes: Int = 0,
         username: String = "",
         user: List<User> = emptyList()
-    ) : this(id, owner, repository, stringDate, month, year, likes, username) {
+    ) : this(id, idRepository, /*owner, repository,*/ stringDate, month, year, likes, username) {
         this.user.addAll(user)
     }
 

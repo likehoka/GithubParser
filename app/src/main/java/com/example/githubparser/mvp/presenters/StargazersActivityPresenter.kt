@@ -7,7 +7,7 @@ import com.omegar.mvp.MvpPresenter
 @InjectViewState
 class StargazersActivityPresenter : MvpPresenter<ViewStargazersActivity>(){
 
-    fun showStargazers(ownerNameText: String, repositoryNameText: String, stringDateText: String) {
-        viewState.onShowStargazers(ownerNameText, repositoryNameText, stringDateText)
+    fun showStargazers(ownerId: Long, stringDateText: String) {
+        viewState.onShowStargazers(ownerId, stringDateText)
     }
 }

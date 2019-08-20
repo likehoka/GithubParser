@@ -25,9 +25,12 @@ interface RepositoryView : OmegaView {
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun onDeleteClicked(repository: Repository)
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun addAdapterRepository()
-
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun onShowAdapter(dataBase: List<Repository>)
+
+    @StateStrategyType(SkipStrategy ::class)
+    fun removeList(
+        minus: List<Repository>,
+        repository: Repository
+    )
 }

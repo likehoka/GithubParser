@@ -8,6 +8,7 @@ import java.util.*
 class StargazersList(
     var owner: String = "",
     var repository: String = "",
+    var idOwner: Long = 0,
     @SerializedName("starred_at")
     val stringDate: String,
     @SerializedName("documentation_url")

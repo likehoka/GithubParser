@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubparser.activities.DetailsActivity
 import com.example.githubparser.R
-import com.example.githubparser.api.StargazersList
 import kotlinx.android.synthetic.main.item_stargazers.view.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 class StargazersAdapter(val stargazers: List<String>) :
     RecyclerView.Adapter<StargazersAdapter.StargazersViewHolder>() {

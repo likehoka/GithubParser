@@ -61,7 +61,12 @@
           "name": "year"
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "3:7077599745439219500",
+          "name": "user"
+        }
+      ]
     },
     {
       "id": "6:6091775602779123111",
@@ -90,7 +95,7 @@
   ],
   "lastEntityId": "6:6091775602779123111",
   "lastIndexId": "0:0",
-  "lastRelationId": "2:7631192876246456060",
+  "lastRelationId": "3:7077599745439219500",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
