@@ -11,6 +11,7 @@ import retrofit2.Response
 
 @InjectViewState
 class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
+    private var labels = ArrayList<String>()
 
     fun failedRepository(){
         viewState.onShowMistake()
@@ -23,6 +24,15 @@ class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
     ) {
         viewState.showBarChart(barChart, data, entries)
     }
+
+    fun setLabels(labels: ArrayList<String>) {
+        this.labels = labels
+    }
+
+    fun getLabels(): ArrayList<String> {
+        return labels
+    }
+
 
     fun showListOfStars(ownerId: Long) {
         viewState.onShowListOfStars(ownerId)
@@ -57,7 +67,10 @@ class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
         viewState.addItemToDataBase(ownerId, compareBaseStatus)
     }
 
-    fun setBarChartValues(entries: ArrayList<BarEntry>) {
-        viewState.setBarChart(entries)
+    fun setBarChartValues(
+        entries: ArrayList<BarEntry>,
+        labels: ArrayList<String>
+    ) {
+        viewState.setBarChart(entries, labels)
     }
 }

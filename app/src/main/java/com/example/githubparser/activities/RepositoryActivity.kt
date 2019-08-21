@@ -57,7 +57,6 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
     }
 
     private fun addAllItemRepository(notes: List<Repository>) {
-        Log.d("test", "Сработал")
         adapter.list = notes
         adapter.refreshAdapter()
     }

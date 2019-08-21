@@ -37,13 +37,11 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     var entry: Entry? = null
     var indexBarchart: Int = 0 //нажатый месяц в barChart
     var stargazersList: List<StargazersList> = emptyList() //общий загружаемый лист из body()
-    private var sortStargazerslist: List<StargazersList> = emptyList() //отсортированный лист из body()
     var counterStargazers: Long = 1 //счетчик страниц retrofit
-    private val labels = ArrayList<String>() //лист месяцев загружаемых в entries
     var notesRepository = ObjectBox.boxStore.boxFor<Repository>() //
     private var ownerNameText: String = ""
     private var repositoryNameText: String = ""
-    private var ownerId: Long = 0
+
     var compareBaseStatus = false
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var presenter: GraphActivityPresenter
@@ -68,6 +66,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.githubparser.R.layout.activity_graph)
+        var ownerId: Long = 0
         ownerNameText = intent.getStringExtra("ownerName")
         repositoryNameText = intent.getStringExtra("repositoryName")
         getDataBase().forEach {
@@ -75,7 +74,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                 ownerId = it.id
             }
         }
-        presenter.showListOfStars(ownerId)//(ownerNameText, repositoryNameText)
+        presenter.showListOfStars(ownerId)
         presenter.requestStargazers(ownerId, counterStargazers)
     }
 
@@ -106,12 +105,12 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
 
 
     override fun onShowListOfStars(ownerId: Long) {
+        val labels = ArrayList<String>() //лист месяцев загружаемых в entries
         Log.d("test", " listOfStars(ownerName: String, repositoryName: String)")
         val entries = ArrayList<BarEntry>()
         entries.clear()
         var count = 0
         var starsCount = 0
-        labels.clear()
         UsersGetAll().getStargazersObjectbox().forEach {
             Log.d("test", "OwnerId = " + ownerId)
             if (it.idRepository == ownerId) {
@@ -122,7 +121,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             }
         }
         Log.d("test", "Label.size: " + labels.size)
-        presenter.setBarChartValues(entries)
+        presenter.setBarChartValues(entries, labels)
     }
 
     override fun onRequestStargazersRetrofit(
@@ -222,6 +221,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         ownerId: Long,
         baseStatus: Boolean
     ) {
+        var sortStargazerslist: List<StargazersList> = emptyList()
         val countStars: Int = UsersGetAll().getallUsersss(ownerId)!!.size
         Log.d("test", "countStars " + countStars)
         Log.d("test", "compareBS " + baseStatus + " stargazersList.size" + stargazersList.size)
@@ -282,7 +282,11 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         }
     }
 
-    override fun setBarChart(entries: ArrayList<BarEntry>) {
+    override fun setBarChart(
+        entries: ArrayList<BarEntry>,
+        labels: ArrayList<String>
+    ) {
+        presenter.setLabels(labels)
         var barDataSet = BarDataSet(entries, "Likes")//? = null
         barDataSet!!.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
         val data = BarData(labels, barDataSet)
@@ -296,6 +300,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     override fun onValueSelected(e: Entry?, dataSetIndex: Int) {
         entry = e
         indexBarchart = dataSetIndex
+        val labels = presenter.getLabels()
         Log.d("test", "e = " + e.toString())
         Log.d("test", "e.val = " + e!!.`val`)
         Log.d("test", "e.xIndex = " + e.xIndex)
@@ -313,7 +318,11 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         Toast.makeText(applicationContext, "This repository is failed", Toast.LENGTH_LONG).show()
     }
 
-    override fun showBarChart(barChart: BarChart, data: BarData, entries: ArrayList<BarEntry>) {
+    override fun showBarChart(
+        barChart: BarChart,
+        data: BarData,
+        entries: ArrayList<BarEntry>
+    ) {
         barChart.data = data // set the data and list of lables into chart
         barChart.setDrawValueAboveBar(true)
         barChart.isDoubleTapToZoomEnabled = false

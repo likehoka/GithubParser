@@ -50,5 +50,8 @@ interface ViewGraphActivity : MvpView {
     )
 
     @StateStrategyType(SingleStateStrategy::class)
-    fun setBarChart(entries: ArrayList<BarEntry>)
+    fun setBarChart(
+        entries: ArrayList<BarEntry>,
+        labels: ArrayList<String>
+    )
 }

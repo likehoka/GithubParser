@@ -20,10 +20,10 @@ import kotlin.concurrent.thread
 
 
 class MyWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
-    var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
-    var counterStargazers: Long = 1
+    private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
+    private var counterStargazers: Long = 1
     var stargazersList: List<StargazersList> = emptyList()
-    var sortStargazerslist: List<StargazersList> = emptyList()
+
 
     override fun doWork(): Result {
         workMethod()
@@ -92,6 +92,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         repositoryName: String,
         idOwner: Long
     ) {
+        var sortStargazerslist: List<StargazersList> = emptyList()
         //Здесь надо сделать обработку getAllUsers.compare(StargazersList)
         stargazersList += body!!
         if (body.size == 100) {
