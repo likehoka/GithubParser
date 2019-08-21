@@ -63,12 +63,17 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
     }
 
-    private fun fetchStargazersRetrofit(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
+    private fun fetchStargazersRetrofit(
+        ownerName: String,
+        repositoryName: String,
+        idOwner: Long,
+        counterStargazers: Long
+    ) {
         this.counterStargazers = counterStargazers
         StargazersApi().getStargazers(ownerName, repositoryName, counterStargazers.toString())
             .enqueue(object : Callback<List<StargazersList>> {
                 override fun onFailure(call: Call<List<StargazersList>>, t: Throwable) {
-                    Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
+
                 }
 
                 override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
@@ -81,7 +86,6 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     }
 
 
-
     private fun stargazersCounter(
         body: List<StargazersList>?,
         ownerName: String,
@@ -90,18 +94,20 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     ) {
         //Здесь надо сделать обработку getAllUsers.compare(StargazersList)
         stargazersList += body!!
-        sortStargazerslist
         if (body.size == 100) {
             counterStargazers += 1
             fetchStargazers(ownerName, repositoryName, idOwner, counterStargazers)
-        } else if (body.size < 100) {
+        }
+        if (body.size < 100) {
             stargazersList?.forEach {
-                val username = it.user.username
                 val stargazer = it
-                it.owner = ownerName
-                it.repository = repositoryName
+                it.idOwner = idOwner
                 counterStargazers = 1
-                var statusCompare: Boolean = false
+                //var statusCompare: Boolean = false
+                if (UsersGetAll().getallUsersss(idOwner)!!.contains(stargazer.user.username)) {
+
+                } else sortStargazerslist += stargazer
+                /*
                 UsersGetAll().getallUserss(idOwner).forEach {
                     if (stargazer.user.username == it) {
                         statusCompare = true
@@ -109,11 +115,18 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 }
                 if (!statusCompare) {
                     sortStargazerslist += stargazer
-                }
+                } */
             }
 
             sortStargazerslist?.let {
-                NewStarsgazers().sortDataToDatabase(ownerName, repositoryName,  DistributeStars().distributeStargazers(it), context as Context, idOwner, true)//, ownerName, repositoryName))//, ownerName, repositoryName)
+                NewStarsgazers().sortDataToDatabase(
+                    ownerName,
+                    repositoryName,
+                    DistributeStars().distributeStargazers(it),
+                    context as Context,
+                    idOwner,
+                    true
+                )//, ownerName, repositoryName))//, ownerName, repositoryName)
             }
 
             sortStargazerslist = emptyList()

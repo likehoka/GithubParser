@@ -4,6 +4,7 @@ package com.example.githubparser.activities
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -56,7 +57,9 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
     }
 
     private fun addAllItemRepository(notes: List<Repository>) {
+        Log.d("test", "Сработал")
         adapter.list = notes
+        adapter.refreshAdapter()
     }
 
     override fun removeList(list: List<Repository>, repository: Repository) {
@@ -68,6 +71,7 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
     override fun setList(list: List<Repository>,repository: Repository
     ) {
         adapter.list = list
+        adapter.refreshAdapter()
         RepositoryBase().putDataBase(repository)
     }
 

@@ -43,10 +43,8 @@ class UsersGetAll {
         notes.forEach {
             if (it.idRepository == ownerId) {
                 listValue +=  it.username.split(",").map { it -> it.trim() }
-                //listSet?.addAll(it.username.split(",").map { it -> it.trim() })
             }
         }
-
         if (listValue.size > 100){
             listValue.subList(listValue.size-100, listValue.size).forEach {
                 listSet!!.add(it)
