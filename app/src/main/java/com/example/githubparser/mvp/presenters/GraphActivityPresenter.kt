@@ -12,6 +12,7 @@ import retrofit2.Response
 @InjectViewState
 class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
     private var labels = ArrayList<String>()
+    private var counterStargazers: Long = 1
 
     fun failedRepository(){
         viewState.onShowMistake()
@@ -31,6 +32,14 @@ class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
 
     fun getLabels(): ArrayList<String> {
         return labels
+    }
+
+    fun setPageCounter(counterStargazers: Long) {
+        this.counterStargazers = counterStargazers
+    }
+
+    fun getPageCounter() : Long {
+        return counterStargazers
     }
 
 

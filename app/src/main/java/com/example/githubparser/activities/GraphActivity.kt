@@ -37,15 +37,15 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     var entry: Entry? = null
     var indexBarchart: Int = 0 //нажатый месяц в barChart
     var stargazersList: List<StargazersList> = emptyList() //общий загружаемый лист из body()
-    var counterStargazers: Long = 1 //счетчик страниц retrofit
     var notesRepository = ObjectBox.boxStore.boxFor<Repository>() //
     private var ownerNameText: String = ""
     private var repositoryNameText: String = ""
-
-    var compareBaseStatus = false
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var presenter: GraphActivityPresenter
     private val noteStargazers = UsersGetAll().getStargazersObjectbox()
+
+    //var counterStargazers: Long = 1 //счетчик страниц retrofit
+    var compareBaseStatus = false
 
 
     companion object {
@@ -75,7 +75,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             }
         }
         presenter.showListOfStars(ownerId)
-        presenter.requestStargazers(ownerId, counterStargazers)
+        presenter.requestStargazers(ownerId, presenter.getPageCounter()) //counterStargazers)
     }
 
     override fun onShowRequestStargazers(
@@ -93,7 +93,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                     count += 1
                 }
             }
-
             if (entries.size != 0) {
                 presenter.resuestStargazersRetrofit(
                     ownerId,
@@ -128,7 +127,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         ownerId: Long,
         counterStargazers: Long
     ) {
-        this.counterStargazers = counterStargazers
+        presenter.setPageCounter(counterStargazers)// = counterStargazers
         Log.d("test", "counterStargazers = " + counterStargazers)
         StargazersApi().getStargazers(ownerNameText, repositoryNameText, counterStargazers.toString())
             .enqueue(object : Callback<List<StargazersList>> {
@@ -145,7 +144,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                         } else {
                             Log.d("test", "(response.body() == null && stargazersList.size == 0)  else")
                             presenter.bodySort(response.body(), ownerId, response)
-                            //bodySorting(response.body(), ownerNameText, repositoryNameText, ownerId, response)
                         }
                     }
                     if (response.message() == "Forbidden" && stargazersList.isEmpty()) {
@@ -158,7 +156,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                         Log.d("test", "(response.message() == \"Forbidden\" && stargazersList.size != 0)")
                         Toast.makeText(applicationContext, "Превышен лимит запросов", Toast.LENGTH_LONG).show()
                         presenter.addItemDataBase(ownerId, compareBaseStatus)
-                        //writeToBase(ownerNameText, repositoryNameText, ownerId, compareBaseStatus)
                     }
                 }
             })
@@ -171,15 +168,15 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     ) {
         if (body != null) {
             stargazersList += body
-            counterStargazers += 1
-            Log.d("test", "if (body != null) counterStargazers " + counterStargazers)
+            presenter.setPageCounter(presenter.getPageCounter() + 1)// += 1
+            Log.d("test", "if (body != null) counterStargazers " + presenter.getPageCounter())
             Log.d("test", "if (body != null)" + " stargazersList.size: " + stargazersList.size)
         }
         if (body != null && body.size == 100) {
             Log.d("test", " if (body != null && body.size == 100)")
             //if (stargazersList.size <= 500) {
             if (stargazersList.size <= 100) {
-                presenter.requestStargazers(ownerId, counterStargazers)
+                presenter.requestStargazers(ownerId, presenter.getPageCounter())
             } else {
                 Log.d("test", " Загрузка данных")
                 //compareBaseStatus = false
@@ -199,7 +196,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             Log.d("test", "(body == null || body.size < 100)")
             Toast.makeText(applicationContext, "Загрузка завершена", Toast.LENGTH_LONG).show()
             compareBaseStatus = false
-            counterStargazers = 1
+            presenter.setPageCounter(1)// = 1
             if (stargazersList.isNotEmpty()) {
                 presenter.addItemDataBase(ownerId, compareBaseStatus)
             }
@@ -209,7 +206,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             Log.d("test", "(body == null || body.size < 100)   1")
             Toast.makeText(applicationContext, "Загрузка завершена", Toast.LENGTH_LONG).show()
             compareBaseStatus = false
-            counterStargazers = 1
+            presenter.setPageCounter(1) //counterStargazers = 1
             if (stargazersList.isNotEmpty()) {
                 presenter.addItemDataBase(ownerId, compareBaseStatus)
             }
@@ -272,10 +269,10 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
             stargazersList = emptyList()
             sortStargazerslist = emptyList()
             presenter.showListOfStars(ownerId)
-            presenter.requestStargazers(ownerId, counterStargazers)
+            presenter.requestStargazers(ownerId, presenter.getPageCounter())
         } else {
             Log.d("test", " (stargazersList.size == 600) else")
-            counterStargazers = 1
+            presenter.setPageCounter(1)//counterStargazers = 1
             stargazersList = emptyList()
             sortStargazerslist = emptyList()
             presenter.showListOfStars(ownerId)
