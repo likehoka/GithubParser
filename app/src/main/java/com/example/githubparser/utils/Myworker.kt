@@ -93,7 +93,6 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         idOwner: Long
     ) {
         var sortStargazerslist: List<StargazersList> = emptyList()
-        //Здесь надо сделать обработку getAllUsers.compare(StargazersList)
         stargazersList += body!!
         if (body.size == 100) {
             counterStargazers += 1
@@ -127,7 +126,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     context as Context,
                     idOwner,
                     true
-                )//, ownerName, repositoryName))//, ownerName, repositoryName)
+                )
             }
 
             sortStargazerslist = emptyList()

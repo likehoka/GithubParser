@@ -40,6 +40,7 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
         setSupportActionBar(toolbar)
+        workManager()
         repositoryRecyclerView.layoutManager = LinearLayoutManager(this)
         repositoryRecyclerView.adapter = adapter
         presenter.showAdapter(RepositoryBase().getDataBase())
@@ -117,7 +118,7 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
             val ownerText = view?.ownerEditText?.text.toString()
             val repositoryText = view?.repositoryEditText?.text.toString()
             presenter.showTextAlertDialog(ownerText, repositoryText)
-        workManager()
+
         super.onDestroy()
     }
 
