@@ -43,8 +43,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     @InjectPresenter(type = PresenterType.GLOBAL)
     lateinit var presenter: GraphActivityPresenter
     private val noteStargazers = UsersGetAll().getStargazersObjectbox()
-
-    //var counterStargazers: Long = 1 //счетчик страниц retrofit
     var compareBaseStatus = false
 
 
@@ -179,7 +177,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
                 presenter.requestStargazers(ownerId, presenter.getPageCounter())
             } else {
                 Log.d("test", " Загрузка данных")
-                //compareBaseStatus = false
                 presenter.addItemDataBase(ownerId, compareBaseStatus)
             }
 
