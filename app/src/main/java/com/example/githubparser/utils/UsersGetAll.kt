@@ -11,24 +11,18 @@ class UsersGetAll {
     fun getallUsers(ownerId: Long): MutableSet<String>? {
         val notes = getStargazersObjectbox()
         var listValue: List<String> = listOf()
-        var listSet: MutableSet<String>? = mutableSetOf()
         notes.forEach {
             if (it.idRepository == ownerId) {
                 listValue +=  it.username.split(",").map { it -> it.trim() }
             }
         }
         if (listValue.size > 100){
-            listValue.subList(listValue.size-100, listValue.size).forEach {
-                listSet!!.add(it)
-            }
+            Log.d("test", "listValue.size = " + listValue.subList(listValue.size-100, listValue.size).toMutableSet().size)
+            return listValue.subList(listValue.size-100, listValue.size).toMutableSet()
         }
 
-        if (listValue.size <= 100) {
-            listValue.forEach {
-                listSet!!.add(it)
-            }
-        }
-        return listSet
+        Log.d("test", "listValue.toMutableSet().size = " + listValue.toMutableSet().size)
+        return listValue.toMutableSet()
     }
 
     fun getAllstringDate(ownerId: Long, stringDate: String) : MutableSet<String>? {
@@ -36,7 +30,6 @@ class UsersGetAll {
         var listValue: List<String> = listOf()
         notes.forEach {
             if (it.idRepository == ownerId && it.stringDate == stringDate) {
-                //listSet = it.usernames
                 listValue +=  it.stringDate
             }
         }
