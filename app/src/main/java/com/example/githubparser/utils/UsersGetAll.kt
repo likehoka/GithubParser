@@ -8,35 +8,7 @@ import io.objectbox.kotlin.boxFor
 class UsersGetAll {
     var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
 
-    fun getallUserss(idOwner: Long): List<String> {
-        val notes = getStargazersObjectbox()
-        var listValue: List<String> = listOf()
-        var returnList: List<String> = listOf()
-        notes.forEach {
-            if (it.idRepository == idOwner) {
-                //listSet = it.usernames
-                listValue +=  it.username.split(",").map { it -> it.trim() }
-            }
-        }
-        if (listValue.size > 100){
-            listValue.subList(listValue.size-100, listValue.size).forEach {
-                returnList += it
-            }
-            Log.d("test", "if (listValue.size > 100){")
-        }
-
-        if (listValue.size <= 100) {
-            listValue.forEach {
-                returnList += it
-            }
-            Log.d("test", "if (listValue.size <= 100) {")
-        }
-
-        Log.d("test", "return returnList.size = " + returnList.size)
-        return returnList
-    }
-
-    fun getallUsersss(ownerId: Long): MutableSet<String>? {
+    fun getallUsers(ownerId: Long): MutableSet<String>? {
         val notes = getStargazersObjectbox()
         var listValue: List<String> = listOf()
         var listSet: MutableSet<String>? = mutableSetOf()
@@ -57,6 +29,18 @@ class UsersGetAll {
             }
         }
         return listSet
+    }
+
+    fun getAllstringDate(ownerId: Long, stringDate: String) : MutableSet<String>? {
+        val notes = getStargazersObjectbox()
+        var listValue: List<String> = listOf()
+        notes.forEach {
+            if (it.idRepository == ownerId && it.stringDate == stringDate) {
+                //listSet = it.usernames
+                listValue +=  it.stringDate
+            }
+        }
+        return listValue.toMutableSet()
     }
 
 

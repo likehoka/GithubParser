@@ -22,6 +22,7 @@ import kotlin.concurrent.thread
 class MyWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
     private var counterStargazers: Long = 1
+    var sortStargazerslist: List<StargazersList> = emptyList()
     var stargazersList: List<StargazersList> = emptyList()
 
 
@@ -38,14 +39,18 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     }
 
     private fun workMethod() {
+        Log.d("test", "Myworker workMethod()")
         getRepositories().forEach {
             thread {
                 fetchStargazers(it.ownerName, it.repositoryName, it.id, counterStargazers)
+                Log.d("test", "fetchStargazers(it.ownerName, it.repositoryName, it.id, counterStargazers)")
+                Log.d("test", "" + it.ownerName + " " + it.repositoryName  + " " + counterStargazers)
             }
         }
     }
 
     private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
+        Log.d("test", "private fun fetchStargazers(ownerName: String")
         if (UsersGetAll().getStargazersObjectbox() != null) {
             val entries = ArrayList<BarEntry>()
             var count: Int = 0
@@ -57,6 +62,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     count += 1
                 }
             }
+            Log.d("test", "starsCount = $starsCount")
             if (entries.size != 0) {
                 fetchStargazersRetrofit(ownerName, repositoryName, idOwner, ((starsCount / 100) + 1).toLong())
             } else fetchStargazersRetrofit(ownerName, repositoryName, idOwner, counterStargazers)
@@ -69,6 +75,8 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         idOwner: Long,
         counterStargazers: Long
     ) {
+        Log.d("test", "counterStargazers = $counterStargazers")
+        Log.d("test", "Myworker private fun fetchStargazersRetrofit")
         this.counterStargazers = counterStargazers
         StargazersApi().getStargazers(ownerName, repositoryName, counterStargazers.toString())
             .enqueue(object : Callback<List<StargazersList>> {
@@ -92,7 +100,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         repositoryName: String,
         idOwner: Long
     ) {
-        var sortStargazerslist: List<StargazersList> = emptyList()
+        Log.d("test", "body(0.size " + body?.size)
         stargazersList += body!!
         if (body.size == 100) {
             counterStargazers += 1
@@ -103,20 +111,11 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 val stargazer = it
                 it.idOwner = idOwner
                 counterStargazers = 1
-                //var statusCompare: Boolean = false
-                if (UsersGetAll().getallUsersss(idOwner)!!.contains(stargazer.user.username)) {
-
-                } else sortStargazerslist += stargazer
-                /*
-                UsersGetAll().getallUserss(idOwner).forEach {
-                    if (stargazer.user.username == it) {
-                        statusCompare = true
-                    }
-                }
-                if (!statusCompare) {
-                    sortStargazerslist += stargazer
-                } */
+                if (UsersGetAll().getallUsers(idOwner)!!.contains(stargazer.user.username)) {}
+                else sortStargazerslist += stargazer
             }
+
+            Log.d("test", "Myworker sortStargazerslist.size " + sortStargazerslist.size)
 
             sortStargazerslist?.let {
                 NewStarsgazers().sortDataToDatabase(
@@ -128,6 +127,8 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     true
                 )
             }
+
+
 
             sortStargazerslist = emptyList()
             stargazersList = emptyList()

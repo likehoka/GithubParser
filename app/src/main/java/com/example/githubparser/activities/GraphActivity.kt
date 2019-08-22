@@ -222,7 +222,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
         baseStatus: Boolean
     ) {
         var sortStargazerslist: List<StargazersList> = emptyList()
-        val countStars: Int = UsersGetAll().getallUsersss(ownerId)!!.size
+        val countStars: Int = UsersGetAll().getallUsers(ownerId)!!.size
         Log.d("test", "countStars " + countStars)
         Log.d("test", "compareBS " + baseStatus + " stargazersList.size" + stargazersList.size)
         if (!baseStatus) {
@@ -235,13 +235,13 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
 
                 if (countStars < 100 && countStars != 0) {
                     Log.d("test", "if (countStars < 100 && countStars !=0) {")
-                    if (UsersGetAll().getallUsersss(ownerId)!!.contains(stargazer.user.username)){
+                    if (UsersGetAll().getallUsers(ownerId)!!.contains(stargazer.user.username)){
                         Log.d("test", "if(countStars < 100) {")
                     } else sortStargazerslist += stargazer
                 }
 
                 if (countStars >= 100) {
-                    if (UsersGetAll().getallUsersss(ownerId)!!.contains(stargazer.user.username)){
+                    if (UsersGetAll().getallUsers(ownerId)!!.contains(stargazer.user.username)){
                         Log.d("test", "if (countStars >= 100) {")
                     } else sortStargazerslist += stargazer
                 }

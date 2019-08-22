@@ -26,7 +26,7 @@ class NewStarsgazers {
         map: MutableMap<Int, MyClassYear>,
         context: Context,
         idOwner: Long,
-        statusService: Boolean = false
+        statusService: Boolean
     ) {
         map.forEach() { year ->
             year.value.monthMap.forEach { yearValue ->
@@ -36,26 +36,25 @@ class NewStarsgazers {
                     month = yearValue.value.monthName, year = yearValue.value.year.toString(),
                     stringDate = yearValue.value.monthName + " " + yearValue.value.year
                 )
-                var statusCompare: Boolean = false
                 var stargazers: Stargazers? = null
-                getnoteObjectbox().forEach {
-                    if (it.idRepository == idOwner && it.stringDate == stargazer.stringDate) {
-                        it.likes += yearValue.value.likes
-                        it.username += ", " + yearValue.value.user
-                        stargazers = it
-                        statusCompare = true
-                        getnoteObjectbox().remove(it)
+                var listStringDate = UsersGetAll().getAllstringDate(stargazer.idRepository, stargazer.stringDate)
+                /////////////////
+                if (listStringDate!!.contains(stargazer.stringDate)) {
+                    getnoteObjectbox().forEach {
+                        if (it.idRepository == idOwner && it.stringDate == stargazer.stringDate) {
+                            it.likes += yearValue.value.likes
+                            it.username += ", " + yearValue.value.user
+                            stargazers = it
+                            //statusCompare = true
+                            getnoteObjectbox().remove(it)
+                            Log.d("test", "if (statusCompare) {")
+                            stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
+                            if (statusService) {
+                                callGraphActivity(ownerName, repositoryName, idOwner, context)
+                            }
+                        }
                     }
-                }
-
-                if (statusCompare) { //если надо изменить базу то пишем данные в базу
-                    Log.d("test", "if (statusCompare) {")
-                    stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
-                    if (statusService) {
-                        callGraphActivity(ownerName, repositoryName, idOwner, context)
-                    }
-                }
-                if (!statusCompare) {
+                } else {
                     Log.d("test", "if (!statusCompare) {")
 
                     if (statusService) {
@@ -74,12 +73,12 @@ class NewStarsgazers {
         idOwner: Long,
         context: Context
     ) {
-        Log.d("test", "Условие")
+        Log.d("test", "Условие $owner $repository")
         val resultIntent = Intent(context, GraphActivity::class.java)
         resultIntent.putExtra("ownerName", owner)
         resultIntent.putExtra("repositoryName", repository)
 
-        val resultPendingIntent = PendingIntent.getActivity(
+            val resultPendingIntent = PendingIntent.getActivity(
             context, idOwner.toInt(), resultIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -94,6 +93,7 @@ class NewStarsgazers {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(idOwner.toInt(), notification)
+        Log.d("test", "Конец вызова")
     }
 
 }
