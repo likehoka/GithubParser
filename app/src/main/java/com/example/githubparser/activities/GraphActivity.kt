@@ -40,7 +40,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, ViewGraphAct
     var notesRepository = ObjectBox.boxStore.boxFor<Repository>() //
     private var ownerNameText: String = ""
     private var repositoryNameText: String = ""
-    @InjectPresenter(type = PresenterType.GLOBAL)
+    @InjectPresenter(type = PresenterType.LOCAL)
     lateinit var presenter: GraphActivityPresenter
     private val noteStargazers = UsersGetAll().getStargazersObjectbox()
     var compareBaseStatus = false
