@@ -11,7 +11,7 @@ import retrofit2.Response
 
 @InjectViewState
 class GraphPresenter : MvpPresenter<GraphView>() {
-    private var labels = ArrayList<String>()
+    private var labelsArrayList = ArrayList<String>()
     private var counterStargazers: Long = 1
 
     fun failedRepository(){
@@ -27,11 +27,11 @@ class GraphPresenter : MvpPresenter<GraphView>() {
     }
 
     fun setLabels(labels: ArrayList<String>) {
-        this.labels = labels
+        this.labelsArrayList = labels
     }
 
     fun getLabels(): ArrayList<String> {
-        return labels
+        return labelsArrayList
     }
 
     fun setPageCounter(counterStargazers: Long) {

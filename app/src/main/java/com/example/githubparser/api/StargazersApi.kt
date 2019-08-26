@@ -16,7 +16,6 @@ interface StargazersApi {
     fun getStargazers(@Path("owner") ownerName: String,
                       @Path("repository") repositoryName: String,
                       @Query("page") counterStargazers: String): Call<List<StargazersList>>
-
     companion object {
         operator fun invoke(): StargazersApi {
             return Retrofit.Builder()

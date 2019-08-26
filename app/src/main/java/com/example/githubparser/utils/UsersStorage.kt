@@ -4,15 +4,15 @@ import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.model.Stargazers
 import io.objectbox.kotlin.boxFor
 
-class UsersGetAll {
+class UsersStorage {
     private var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
 
     fun getUsers(ownerId: Long): MutableSet<String>? {
         val listStargazers = getAllStargazersList()
         var listValue: List<String> = listOf()
-        listStargazers.forEach {
+        listStargazers.forEach { it ->
             if (it.idRepository == ownerId) {
-                listValue +=  it.username.split(",").map { it -> it.trim() }
+                listValue +=  it.username.split(",").map { it.trim() }
             }
         }
         if (listValue.size > 100){

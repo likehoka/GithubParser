@@ -17,10 +17,10 @@ class RepositoryBase {
     }
 
     fun removeRepository(repository: Repository) {
-        var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
-        notesStargazers.query().build().find().forEach {
+        var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
+        stargazersBox.query().build().find().forEach {
             if (it.id == repositoryBox.getId(repository))
-            notesStargazers.query().build().find().remove(it)
+            stargazersBox.query().build().find().remove(it)
         }
         repositoryBox.remove(repository)
     }

@@ -19,7 +19,7 @@ import kotlin.concurrent.thread
 class MyWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
     private var counterStargazers: Long = 1
-    private var sortStargazerslist: List<StargazersList> = emptyList()
+    private var sortStargazersList: List<StargazersList> = emptyList()
     private var stargazersList: List<StargazersList> = emptyList()
 
     override fun doWork(): Result {
@@ -40,11 +40,11 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
     }
 
     private fun fetchStargazers(ownerName: String, repositoryName: String, idOwner: Long, counterStargazers: Long) {
-        if (UsersGetAll().getAllStargazersList() != null) {
+        if (UsersStorage().getAllStargazersList() != null) {
             val entries = ArrayList<BarEntry>()
             var count = 0
             var starsCount = 0
-            UsersGetAll().getAllStargazersList().forEach {
+            UsersStorage().getAllStargazersList().forEach {
                 if (it.idRepository == idOwner) {
                     starsCount += it.likes
                     entries.add(BarEntry(it.likes.toFloat(), count))
@@ -94,10 +94,10 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                 val stargazer = it
                 it.idOwner = idOwner
                 counterStargazers = 1
-                if (UsersGetAll().getUsers(idOwner)!!.contains(stargazer.user.username)) {}
-                else sortStargazerslist += stargazer
+                if (UsersStorage().getUsers(idOwner)!!.contains(stargazer.user.username)) {}
+                else sortStargazersList += stargazer
             }
-            sortStargazerslist?.let {
+            sortStargazersList?.let {
                 NewStarsgazers().sortDataToDatabase(
                     ownerName,
                     repositoryName,
@@ -107,7 +107,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     true
                 )
             }
-            sortStargazerslist = emptyList()
+            sortStargazersList = emptyList()
             stargazersList = emptyList()
         }
     }

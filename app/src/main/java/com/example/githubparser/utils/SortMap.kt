@@ -5,11 +5,11 @@ import java.util.*
 
 class SortMap {
     fun getStargazersMap(
-        stargazer: List<StargazersList>
+        stargazersList: List<StargazersList>
     ): MutableMap<Int, YearMap> {
         val map = mutableMapOf<Int, YearMap>()
 
-        stargazer.forEach {
+        stargazersList.forEach {
             val date = it.getDate()
             val userName = it.user
             val instance = Calendar.getInstance()

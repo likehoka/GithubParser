@@ -13,7 +13,7 @@ class RepositoryAdapter(
     private var callback: Callback? = null
 ) : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
 
-    var list: List<Repository> = mutableListOf()
+    var repositoryList: List<Repository> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
         return RepositoryViewHolder(
@@ -24,23 +24,21 @@ class RepositoryAdapter(
 
     fun refreshAdapter() {notifyDataSetChanged()}
 
-
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = repositoryList.size
 
     override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(repositoryList[position])
     }
 
     inner class RepositoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         private val ownerNameTextView = itemView.findViewById<TextView>(R.id.ownerNameTextView)
         private val repositoryNameTextView = itemView.findViewById<TextView>(R.id.repositoryNameTextView)
         init {
             itemView.repositoryCardView.setOnClickListener {
-                callback?.onOpenClicked(list[adapterPosition])
+                callback?.onOpenClicked(repositoryList[adapterPosition])
             }
             itemView.avatarRepository.setOnClickListener {
-                callback?.onDeleteClicked(list[adapterPosition])
+                callback?.onDeleteClicked(repositoryList[adapterPosition])
             }
         }
 

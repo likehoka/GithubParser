@@ -52,19 +52,19 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
     }
 
     private fun addAllItemRepository(notes: List<Repository>) {
-        adapter.list = notes
+        adapter.repositoryList = notes
         adapter.refreshAdapter()
     }
 
     override fun removeList(list: List<Repository>, repository: Repository) {
-        adapter.list = list
+        adapter.repositoryList = list
         adapter.refreshAdapter()
         RepositoryBase().removeRepository(repository)
     }
 
     override fun setList(list: List<Repository>,repository: Repository
     ) {
-        adapter.list = list
+        adapter.repositoryList = list
         adapter.refreshAdapter()
         RepositoryBase().putRepository(repository)
     }

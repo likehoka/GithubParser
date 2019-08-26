@@ -20,7 +20,7 @@ import com.example.githubparser.mvp.GraphView
 import com.example.githubparser.mvp.presenters.GraphPresenter
 import com.example.githubparser.utils.SortMap
 import com.example.githubparser.utils.NewStarsgazers
-import com.example.githubparser.utils.UsersGetAll
+import com.example.githubparser.utils.UsersStorage
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.interfaces.OnChartValueSelectedListener
@@ -40,7 +40,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
     private var repositoryNameText: String = ""
     @InjectPresenter(type = PresenterType.LOCAL)
     lateinit var presenter: GraphPresenter
-    private val listStargazers = UsersGetAll().getAllStargazersList()
+    private val listStargazers = UsersStorage().getAllStargazersList()
     private var compareBaseStatus = false
 
     companion object {
@@ -102,7 +102,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         entries.clear()
         var count = 0
         var starsCount = 0
-        UsersGetAll().getAllStargazersList().forEach {
+        UsersStorage().getAllStargazersList().forEach {
             if (it.idRepository == ownerId) {
                 starsCount += it.likes
                 entries.add(BarEntry(it.likes.toFloat(), count))
@@ -191,7 +191,7 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         baseStatus: Boolean
     ) {
         var sortStargazerslist: List<StargazersList> = emptyList()
-        val countStars: Int = UsersGetAll().getUsers(ownerId)!!.size
+        val countStars: Int = UsersStorage().getUsers(ownerId)!!.size
         if (!baseStatus) {
             stargazersList?.forEach {
                 val stargazer = it
@@ -201,13 +201,13 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
                 }
 
                 if (countStars < 100 && countStars != 0) {
-                    if (!UsersGetAll().getUsers(ownerId)!!.contains(stargazer.user.username)) {
+                    if (!UsersStorage().getUsers(ownerId)!!.contains(stargazer.user.username)) {
                         sortStargazerslist += stargazer
                     }
                 }
 
                 if (countStars >= 100) {
-                    if (!UsersGetAll().getUsers(ownerId)!!.contains(stargazer.user.username)) {
+                    if (!UsersStorage().getUsers(ownerId)!!.contains(stargazer.user.username)) {
                         sortStargazerslist += stargazer
                     }
                 }

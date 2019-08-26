@@ -22,9 +22,7 @@ class StargazersAdapter(val stargazers: List<String>) :
         val stargazer = stargazers[position]
         holder.view.login.text = stargazer
         holder.view.setOnClickListener {
-            val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
-            intentDetailsActivity.putExtra("webUrl", stargazer)
-            holder.view.context.startActivity(intentDetailsActivity)
+            holder.view.context.startActivity(DetailsActivity.createIntent(holder.view.context, stargazer))
         }
     }
 

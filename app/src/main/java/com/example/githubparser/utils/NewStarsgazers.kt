@@ -13,10 +13,10 @@ import io.objectbox.kotlin.boxFor
 
 class NewStarsgazers {
 
-    private var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
+    private var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
 
-    private fun getnoteObjectbox(): MutableList<Stargazers> {
-        return notesStargazers.query().build().find()
+    private fun getStargazersList(): MutableList<Stargazers> {
+        return stargazersBox.query().build().find()
     }
 
     fun sortDataToDatabase(
@@ -36,15 +36,15 @@ class NewStarsgazers {
                     stringDate = yearValue.value.monthName + " " + yearValue.value.year
                 )
                 var stargazers: Stargazers? = null
-                var listStringDate = UsersGetAll().getStargazersList(stargazer.idRepository, stargazer.stringDate)
-                if (listStringDate!!.contains(stargazer.stringDate)) {
-                    getnoteObjectbox().forEach {
+                var stargazersList = UsersStorage().getStargazersList(stargazer.idRepository, stargazer.stringDate)
+                if (stargazersList!!.contains(stargazer.stringDate)) {
+                    getStargazersList().forEach {
                         if (it.idRepository == idOwner && it.stringDate == stargazer.stringDate) {
                             it.likes += yearValue.value.likes
                             it.username += ", " + yearValue.value.user
                             stargazers = it
-                            getnoteObjectbox().remove(it)
-                            stargazers?.let { it1 -> UsersGetAll().setStargazers(it1) }
+                            getStargazersList().remove(it)
+                            stargazers?.let { it1 -> UsersStorage().setStargazers(it1) }
                             if (statusService) {
                                 callGraphActivity(ownerName, repositoryName, idOwner, context)
                             }
@@ -54,7 +54,7 @@ class NewStarsgazers {
                     if (statusService) {
                         callGraphActivity(ownerName, repositoryName, idOwner, context)
                     } else  {
-                        UsersGetAll().setStargazers(stargazer)
+                        UsersStorage().setStargazers(stargazer)
                     }
                 }
             }

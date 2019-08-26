@@ -30,7 +30,7 @@ interface RepositoryView : OmegaView {
 
     @StateStrategyType(SkipStrategy ::class)
     fun removeList(
-        minus: List<Repository>,
+        list: List<Repository>,
         repository: Repository
     )
 }

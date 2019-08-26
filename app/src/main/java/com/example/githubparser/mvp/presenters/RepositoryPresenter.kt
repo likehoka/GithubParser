@@ -17,12 +17,12 @@ class RepositoryPresenter : OmegaPresenter<RepositoryView>() {
         repository: Repository,
         adapter: RepositoryAdapter
     ) {
-        viewState.setList(adapter.list.plus(repository), repository)
+        viewState.setList(adapter.repositoryList.plus(repository), repository)
     }
 
     fun removeAdapterItem(repository: Repository,
                           adapter: RepositoryAdapter) {
-        viewState.removeList(adapter.list.minus(repository), repository)
+        viewState.removeList(adapter.repositoryList.minus(repository), repository)
     }
 
     fun requestOpenAddDialog() {
