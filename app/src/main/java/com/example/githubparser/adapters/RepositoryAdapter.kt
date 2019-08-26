@@ -1,6 +1,5 @@
 package com.example.githubparser.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import com.example.githubparser.model.Repository
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoryAdapter(
-    var callback: Callback? = null
+    private var callback: Callback? = null
 ) : RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
 
     var list: List<Repository> = mutableListOf()
@@ -24,6 +23,7 @@ class RepositoryAdapter(
     }
 
     fun refreshAdapter() {notifyDataSetChanged()}
+
 
     override fun getItemCount(): Int = list.size
 
@@ -47,14 +47,12 @@ class RepositoryAdapter(
         fun bind(repository: Repository) {
             ownerNameTextView.text = repository.ownerName
             repositoryNameTextView.text = repository.repositoryName
-            //val repository = list[adapterPosition]
         }
     }
 
     interface Callback {
         fun onDeleteClicked(repository: Repository)
         fun onOpenClicked(repository: Repository)
-
     }
 
 }

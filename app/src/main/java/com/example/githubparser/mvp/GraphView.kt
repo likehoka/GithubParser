@@ -8,10 +8,10 @@ import com.omegar.mvp.MvpView
 import com.omegar.mvp.viewstate.strategy.*
 import retrofit2.Response
 
-interface ViewGraphActivity : MvpView {
+interface GraphView : MvpView {
     @StateStrategyType(SkipStrategy::class)
     fun onShowMistake()
-    @StateStrategyType(AddToEndStrategy::class) //AddToEndStrategy::class
+    @StateStrategyType(AddToEndStrategy::class)
     fun showBarChart(
         barChart: BarChart,
         data: BarData,

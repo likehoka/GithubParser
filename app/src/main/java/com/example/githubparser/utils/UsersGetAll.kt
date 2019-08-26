@@ -1,32 +1,28 @@
 package com.example.githubparser.utils
 
-import android.util.Log
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.model.Stargazers
 import io.objectbox.kotlin.boxFor
 
 class UsersGetAll {
-    var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
+    private var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
 
-    fun getallUsers(ownerId: Long): MutableSet<String>? {
-        val notes = getStargazersObjectbox()
+    fun getUsers(ownerId: Long): MutableSet<String>? {
+        val listStargazers = getAllStargazersList()
         var listValue: List<String> = listOf()
-        notes.forEach {
+        listStargazers.forEach {
             if (it.idRepository == ownerId) {
                 listValue +=  it.username.split(",").map { it -> it.trim() }
             }
         }
         if (listValue.size > 100){
-            Log.d("test", "listValue.size = " + listValue.subList(listValue.size-100, listValue.size).toMutableSet().size)
             return listValue.subList(listValue.size-100, listValue.size).toMutableSet()
         }
-
-        Log.d("test", "listValue.toMutableSet().size = " + listValue.toMutableSet().size)
         return listValue.toMutableSet()
     }
 
-    fun getAllstringDate(ownerId: Long, stringDate: String) : MutableSet<String>? {
-        val notes = getStargazersObjectbox()
+    fun getStargazersList(ownerId: Long, stringDate: String) : MutableSet<String>? {
+        val notes = getAllStargazersList()
         var listValue: List<String> = listOf()
         notes.forEach {
             if (it.idRepository == ownerId && it.stringDate == stringDate) {
@@ -37,11 +33,11 @@ class UsersGetAll {
     }
 
 
-    fun getStargazersObjectbox(): MutableList<Stargazers> {
-        return notesStargazers.query().build().find()
+    fun getAllStargazersList(): MutableList<Stargazers> {
+        return stargazersBox.query().build().find()
     }
 
-    fun setStargazersObjectbox(stargazer: Stargazers) {
-        notesStargazers.put(stargazer)
+    fun setStargazers(stargazer: Stargazers) {
+        stargazersBox.put(stargazer)
     }
 }

@@ -5,25 +5,33 @@ import com.example.githubparser.model.Repository
 import com.example.githubparser.model.Stargazers
 import io.objectbox.kotlin.boxFor
 
-class RepositoryBase () {
-    private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
+class RepositoryBase {
+    private var repositoryBox = ObjectBox.boxStore.boxFor<Repository>()
 
-    fun getDataBase(): List<Repository> {
-        return notesRepository.query().build().find()
+    fun getRepositoriesList(): List<Repository> {
+        return repositoryBox.query().build().find()
     }
 
-    fun putDataBase(repository: Repository) {
-        notesRepository.put(repository)
+    fun putRepository(repository: Repository) {
+        repositoryBox.put(repository)
     }
 
-    fun deleteData(repository: Repository) {
+    fun removeRepository(repository: Repository) {
         var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
         notesStargazers.query().build().find().forEach {
-            if (it.id == notesRepository.getId(repository))
+            if (it.id == repositoryBox.getId(repository))
             notesStargazers.query().build().find().remove(it)
         }
-        notesRepository.remove(repository)
+        repositoryBox.remove(repository)
     }
 
+    fun compareRepositories(ownerText: String, repositoryText: String, dataBase: List<Repository>): Boolean {
+        dataBase.forEach {
+            if (it.ownerName == ownerText && it.repositoryName == repositoryText) {
+                return false
+            }
+        }
+        return true
+    }
 
 }

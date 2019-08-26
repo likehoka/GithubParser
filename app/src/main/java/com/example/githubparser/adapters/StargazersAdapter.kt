@@ -1,7 +1,6 @@
 package com.example.githubparser.adapters
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +19,9 @@ class StargazersAdapter(val stargazers: List<String>) :
     }
 
     override fun onBindViewHolder(holder: StargazersViewHolder, position: Int) {
-
         val stargazer = stargazers[position]
         holder.view.login.text = stargazer
         holder.view.setOnClickListener {
-            Log.d("test", "User: " + stargazer)
             val intentDetailsActivity = Intent(holder.view.context, DetailsActivity::class.java)
             intentDetailsActivity.putExtra("webUrl", stargazer)
             holder.view.context.startActivity(intentDetailsActivity)

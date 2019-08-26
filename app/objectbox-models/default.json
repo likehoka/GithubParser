@@ -59,7 +59,7 @@
       ],
       "relations": [
         {
-          "id": "3:7077599745439219500",
+          "id": "4:6487754592971269999",
           "name": "user"
         }
       ]
@@ -91,7 +91,7 @@
   ],
   "lastEntityId": "6:6091775602779123111",
   "lastIndexId": "0:0",
-  "lastRelationId": "3:7077599745439219500",
+  "lastRelationId": "4:6487754592971269999",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
@@ -119,7 +119,8 @@
   ],
   "retiredRelationUids": [
     8625985014409525374,
-    7631192876246456060
+    7631192876246456060,
+    7077599745439219500
   ],
   "version": 1
 }

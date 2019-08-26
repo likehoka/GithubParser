@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.R
@@ -14,7 +13,7 @@ import io.objectbox.kotlin.boxFor
 
 class NewStarsgazers {
 
-    var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
+    private var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
 
     private fun getnoteObjectbox(): MutableList<Stargazers> {
         return notesStargazers.query().build().find()
@@ -23,12 +22,12 @@ class NewStarsgazers {
     fun sortDataToDatabase(
         ownerName: String,
         repositoryName: String,
-        map: MutableMap<Int, MyClassYear>,
+        map: MutableMap<Int, YearMap>,
         context: Context,
         idOwner: Long,
         statusService: Boolean
     ) {
-        map.forEach() { year ->
+        map.forEach { year ->
             year.value.monthMap.forEach { yearValue ->
                 val stargazer = Stargazers(
                     idRepository = yearValue.value.ownerId,
@@ -37,30 +36,25 @@ class NewStarsgazers {
                     stringDate = yearValue.value.monthName + " " + yearValue.value.year
                 )
                 var stargazers: Stargazers? = null
-                var listStringDate = UsersGetAll().getAllstringDate(stargazer.idRepository, stargazer.stringDate)
-                /////////////////
+                var listStringDate = UsersGetAll().getStargazersList(stargazer.idRepository, stargazer.stringDate)
                 if (listStringDate!!.contains(stargazer.stringDate)) {
                     getnoteObjectbox().forEach {
                         if (it.idRepository == idOwner && it.stringDate == stargazer.stringDate) {
                             it.likes += yearValue.value.likes
                             it.username += ", " + yearValue.value.user
                             stargazers = it
-                            //statusCompare = true
                             getnoteObjectbox().remove(it)
-                            Log.d("test", "if (statusCompare) {")
-                            stargazers?.let { it1 -> UsersGetAll().setStargazersObjectbox(it1) }
+                            stargazers?.let { it1 -> UsersGetAll().setStargazers(it1) }
                             if (statusService) {
                                 callGraphActivity(ownerName, repositoryName, idOwner, context)
                             }
                         }
                     }
                 } else {
-                    Log.d("test", "if (!statusCompare) {")
-
                     if (statusService) {
                         callGraphActivity(ownerName, repositoryName, idOwner, context)
                     } else  {
-                        UsersGetAll().setStargazersObjectbox(stargazer)
+                        UsersGetAll().setStargazers(stargazer)
                     }
                 }
             }
@@ -73,7 +67,6 @@ class NewStarsgazers {
         idOwner: Long,
         context: Context
     ) {
-        Log.d("test", "Условие $owner $repository")
         val resultIntent = Intent(context, GraphActivity::class.java)
         resultIntent.putExtra("ownerName", owner)
         resultIntent.putExtra("repositoryName", repository)
@@ -93,7 +86,6 @@ class NewStarsgazers {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(idOwner.toInt(), notification)
-        Log.d("test", "Конец вызова")
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.githubparser.mvp.presenters
 
 import com.example.githubparser.api.StargazersList
-import com.example.githubparser.mvp.ViewGraphActivity
+import com.example.githubparser.mvp.GraphView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
@@ -10,7 +10,7 @@ import com.omegar.mvp.MvpPresenter
 import retrofit2.Response
 
 @InjectViewState
-class GraphActivityPresenter : MvpPresenter<ViewGraphActivity>() {
+class GraphPresenter : MvpPresenter<GraphView>() {
     private var labels = ArrayList<String>()
     private var counterStargazers: Long = 1
 

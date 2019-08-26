@@ -8,5 +8,4 @@ data class Repository(
     @Id var id: Long = 0,
     val ownerName: String = "ownerName",
     val repositoryName: String = "repositoryName"
-
 )

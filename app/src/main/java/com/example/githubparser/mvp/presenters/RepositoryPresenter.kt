@@ -8,7 +8,7 @@ import com.omega_r.base.mvp.presenters.OmegaPresenter
 import com.omegar.mvp.InjectViewState
 
 @InjectViewState
-class RepositoryActivityPresenter : OmegaPresenter<RepositoryView>() {
+class RepositoryPresenter : OmegaPresenter<RepositoryView>() {
     fun closeAlertDialog(dialog: DialogInterface) {
         viewState.onCloseAlertDialog(dialog)
     }

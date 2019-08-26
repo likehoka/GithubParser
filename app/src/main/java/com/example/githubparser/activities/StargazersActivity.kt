@@ -3,27 +3,26 @@ package com.example.githubparser.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubparser.Database.objectbox.ObjectBox
 import com.example.githubparser.R
 import com.example.githubparser.adapters.StargazersAdapter
 import com.example.githubparser.model.Repository
 import com.example.githubparser.model.Stargazers
-import com.example.githubparser.mvp.ViewStargazersActivity
-import com.example.githubparser.mvp.presenters.StargazersActivityPresenter
+import com.example.githubparser.mvp.StargazersView
+import com.example.githubparser.mvp.presenters.StargazersPresenter
 import com.omegar.mvp.presenter.InjectPresenter
 import com.omegar.mvp.presenter.PresenterType
 import io.objectbox.kotlin.boxFor
 import kotlinx.android.synthetic.main.activity_main.*
 
-class StargazersActivity : BaseActivity(), ViewStargazersActivity {
+class StargazersActivity : BaseActivity(), StargazersView {
 
-    var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
-    val notes = notesStargazers.query().build().find()
+    private var notesStargazers = ObjectBox.boxStore.boxFor<Stargazers>()
+    private val notes = notesStargazers.query().build().find()
     @InjectPresenter(type = PresenterType.GLOBAL)
-    lateinit var stargazersPresenter: StargazersActivityPresenter
-    var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
+    lateinit var stargazersPresenter: StargazersPresenter
+    private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
     private var ownerId: Long = 0
 
     companion object {
@@ -44,17 +43,15 @@ class StargazersActivity : BaseActivity(), ViewStargazersActivity {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         stargazersRecyclerView.layoutManager = LinearLayoutManager(this)
-        val ownerNameText = intent.getStringExtra("ownerName")
-        val repositoryNameText = intent.getStringExtra("repositoryName")
-        val stringDateText = intent.getStringExtra("stringDate")
+        val ownerNameText = intent.getStringExtra(EXTRA_OWNER_NAME)
+        val repositoryNameText = intent.getStringExtra(EXTRA_REPOSITORY_NAME)
+        val stringDateText = intent.getStringExtra(EXTRA_DATE)
 
         getDataBase().forEach {
             if (it.ownerName == ownerNameText && it.repositoryName == repositoryNameText) {
                 ownerId = it.id
             }
         }
-
-        Log.d("test", "${ownerNameText}, ${repositoryNameText}, ${stringDateText}")
         stargazersPresenter.showStargazers(ownerId, stringDateText)
     }
 
