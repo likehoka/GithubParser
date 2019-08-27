@@ -1,21 +1,32 @@
 package com.example.githubparser.mvp.presenters
 
+import android.content.Context
+import com.example.githubparser.api.StargazersApi
 import com.example.githubparser.api.StargazersList
 import com.example.githubparser.mvp.GraphView
+import com.example.githubparser.utils.NewStarsgazers
+import com.example.githubparser.utils.SortMap
+import com.example.githubparser.utils.UsersStorage
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarEntry
 import com.omegar.mvp.InjectViewState
 import com.omegar.mvp.MvpPresenter
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 @InjectViewState
 class GraphPresenter : MvpPresenter<GraphView>() {
+    private var compareBaseStatus = false
     private var labelsArrayList = ArrayList<String>()
     private var counterStargazers: Long = 1
+    private var stargazersList: List<StargazersList> = emptyList()
+    private lateinit var context: Context
+    private val listStargazers = UsersStorage().getAllStargazersList()
 
-    fun failedRepository(){
-        viewState.onShowMistake()
+    fun setContext(context: Context) {
+        this.context = context
     }
 
     fun setBarChartEntries(
@@ -38,48 +49,185 @@ class GraphPresenter : MvpPresenter<GraphView>() {
         this.counterStargazers = counterStargazers
     }
 
-    fun getPageCounter() : Long {
+    fun getPageCounter(): Long {
         return counterStargazers
     }
 
 
     fun showListOfStars(ownerId: Long) {
-        viewState.onShowListOfStars(ownerId)
+        val labels = ArrayList<String>()
+        val entries = ArrayList<BarEntry>()
+        entries.clear()
+        var count = 0
+        var starsCount = 0
+        UsersStorage().getAllStargazersList().forEach {
+            if (it.idRepository == ownerId) {
+                starsCount += it.likes
+                entries.add(BarEntry(it.likes.toFloat(), count))
+                labels.add(it.month + " " + it.year)
+                count += 1
+            }
+        }
+        viewState.setBarChart(entries, labels)
     }
 
     fun requestStargazers(
         ownerId: Long,
-        counterStargazers: Long
+        counterStargazers: Long,
+        ownerNameText: String,
+        repositoryNameText: String
     ) {
-        viewState.onShowRequestStargazers(ownerId, counterStargazers)
+        if (listStargazers != null && counterStargazers == 1.toLong()) {
+            val entries = ArrayList<BarEntry>()
+            var count = 0
+            var starsCount = 0
+            listStargazers.forEach {
+                if (it.idRepository == ownerId) {
+                    starsCount += it.likes
+                    entries.add(BarEntry(it.likes.toFloat(), count))
+                    count += 1
+                }
+            }
+            if (entries.size != 0) {
+                viewState.setStargazersCounter(
+                    ownerId,
+                    ((starsCount / 100) + 1).toLong(), ownerNameText, repositoryNameText
+                )
+            } else viewState.setStargazersCounter(
+                ownerId, counterStargazers, ownerNameText, repositoryNameText
+            )
+        } else viewState.setStargazersCounter(
+            ownerId, counterStargazers, ownerNameText, repositoryNameText
+        )
+
     }
 
-    fun resuestStargazersRetrofit(
+    fun requestStargazersRetrofit(
         ownerId: Long,
-        toLong: Long
+        counterStargazers: Long,
+        ownerNameText: String,
+        repositoryNameText: String
     ) {
-        viewState.onRequestStargazersRetrofit(ownerId, toLong)
+
+        StargazersApi().getStargazers(ownerNameText, repositoryNameText, counterStargazers.toString())
+            .enqueue(object : Callback<List<StargazersList>> {
+                override fun onFailure(call: Call<List<StargazersList>>, t: Throwable) {
+                    viewState.onShowMistake()
+                }
+
+                override fun onResponse(call: Call<List<StargazersList>>, response: Response<List<StargazersList>>) {
+                    if (response.message() != "Forbidden") {
+                        if (response.body() == null && stargazersList.isEmpty()) {
+                            viewState.onShowMistake()
+                        } else {
+                            viewState.callBodySort(response.body(), ownerId, response, ownerNameText, repositoryNameText)
+                        }
+                    }
+                    if (response.message() == "Forbidden" && stargazersList.isEmpty()) {
+                        viewState.limitRequest()
+                    }
+                    if (response.message() == "Forbidden" && stargazersList.isNotEmpty()) {
+                        viewState.limitRequest()
+                    }
+                }
+            })
     }
 
     fun bodySort(
         body: List<StargazersList>?,
         ownerId: Long,
-        response: Response<List<StargazersList>>
+        response: Response<List<StargazersList>>,
+        ownerNameText: String,
+        repositoryNameText: String
     ) {
-        viewState.onBodySort(body, ownerId, response)
+
+        if (body != null) {
+            stargazersList += body
+            viewState.setPage(getPageCounter() + 1)
+        }
+        if (body != null && body.size == 100) {
+            if (stargazersList.size <= 100) {
+                viewState.requestStargazers(ownerId, getPageCounter(), ownerNameText, repositoryNameText)
+            } else {
+                viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+            }
+        }
+        if (response.message() == "Forbidden") {
+            compareBaseStatus = false
+            if (stargazersList.isNotEmpty()) {
+                viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+            }
+
+        }
+        if (body == null) {
+            viewState.loadingComplete()
+            compareBaseStatus = false
+            if (stargazersList.isNotEmpty()) {
+                viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+            }
+        }
+
+        if (body?.size!! < 100) {
+            viewState.loadingComplete()
+            compareBaseStatus = false
+            if (stargazersList.isNotEmpty()) {
+                viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+            }
+        }
     }
 
     fun addItemDataBase(
         ownerId: Long,
-        compareBaseStatus: Boolean
+        compareBaseStatus: Boolean,
+        ownerNameText: String,
+        repositoryNameText: String
     ) {
-        viewState.addItemToDataBase(ownerId, compareBaseStatus)
-    }
+        var sortStargazerslist: List<StargazersList> = emptyList()
+        val countStars: Int = UsersStorage().getUsers(ownerId)!!.size
+        if (!compareBaseStatus) {
+            stargazersList?.forEach {
+                val stargazer = it
+                it.idOwner = ownerId
+                if (countStars == 0) {
+                    sortStargazerslist += stargazer
+                }
 
-    fun setBarChartValues(
-        entries: ArrayList<BarEntry>,
-        labels: ArrayList<String>
-    ) {
-        viewState.setBarChart(entries, labels)
+                if (countStars < 100 && countStars != 0) {
+                    if (!UsersStorage().getUsers(ownerId)!!.contains(stargazer.user.username)) {
+                        sortStargazerslist += stargazer
+                    }
+                }
+
+                if (countStars >= 100) {
+                    if (!UsersStorage().getUsers(ownerId)!!.contains(stargazer.user.username)) {
+                        sortStargazerslist += stargazer
+                    }
+                }
+            }
+        } else stargazersList.forEach {
+            it.idOwner = ownerId
+            sortStargazerslist += it
+        }
+        this.compareBaseStatus = true
+
+        sortStargazerslist?.let {
+            val stars = SortMap().getStargazersMap(it)
+            NewStarsgazers().sortDataToDatabase(
+                ownerNameText, repositoryNameText,
+                stars,
+                context, ownerId, false
+            )
+        }
+
+        if (stargazersList.size == 200) {
+            stargazersList = emptyList()
+            sortStargazerslist = emptyList()
+            showListOfStars(ownerId)
+            viewState.requestStargazers(ownerId, getPageCounter(), ownerNameText, repositoryNameText)
+        } else {
+            stargazersList = emptyList()
+            sortStargazerslist = emptyList()
+            showListOfStars(ownerId)
+        }
     }
 }

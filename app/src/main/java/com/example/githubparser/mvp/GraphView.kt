@@ -9,46 +9,60 @@ import com.omegar.mvp.viewstate.strategy.*
 import retrofit2.Response
 
 interface GraphView : MvpView {
-    @StateStrategyType(SkipStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy::class)
     fun onShowMistake()
-    @StateStrategyType(AddToEndStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showBarChart(
         barChart: BarChart,
         data: BarData,
         entries: ArrayList<BarEntry>
     )
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun onShowListOfStars(ownerId: Long)
-
-    @StateStrategyType(AddToEndStrategy::class)
-    fun onShowRequestStargazers(
-        ownerId: Long,
-        counterStargazers: Long
-    )
-
-    @StateStrategyType(SingleStateStrategy::class)
-    fun onRequestStargazersRetrofit(
-        ownerId: Long,
-        toLong: Long
-    )
-
-    @StateStrategyType(SingleStateStrategy::class)
-    fun onBodySort(
-        body: List<StargazersList>?,
-        ownerId: Long,
-        response: Response<List<StargazersList>>
-    )
-
-    @StateStrategyType(SingleStateStrategy::class)
-    fun addItemToDataBase(
-        ownerId: Long,
-        compareBaseStatus: Boolean
-    )
-
-    @StateStrategyType(SingleStateStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy::class)
     fun setBarChart(
         entries: ArrayList<BarEntry>,
         labels: ArrayList<String>
+    )
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun setStargazersCounter(
+        ownerId: Long,
+        toLong: Long,
+        ownerNameText: String,
+        repositoryNameText: String
+    )
+
+    @StateStrategyType(SingleStateStrategy::class)
+    fun limitRequest()
+
+    @StateStrategyType(SingleStateStrategy::class)
+    fun loadingComplete()
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun setPage(counter: Long)
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun callBodySort(
+        body: List<StargazersList>?,
+        ownerId: Long,
+        response: Response<List<StargazersList>>,
+        ownerNameText: String,
+        repositoryNameText: String
+    )
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun addItemBase(
+        ownerId: Long,
+        compareBaseStatus: Boolean,
+        ownerNameText: String,
+        repositoryNameText: String
+    )
+
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun requestStargazers(
+        ownerId: Long,
+        pageCounter: Long,
+        ownerNameText: String,
+        repositoryNameText: String
     )
 }
