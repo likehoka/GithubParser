@@ -7,5 +7,5 @@ import com.omegar.mvp.viewstate.strategy.StateStrategyType
 
 interface DetailsView : MvpView {
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun onShowWebView()
+    fun showWebUrl(url: String)
 }

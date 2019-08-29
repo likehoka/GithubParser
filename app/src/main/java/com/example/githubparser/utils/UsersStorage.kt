@@ -15,6 +15,7 @@ class UsersStorage {
                 listValue +=  it.username.split(",").map { it.trim() }
             }
         }
+
         if (listValue.size > 100){
             return listValue.subList(listValue.size-100, listValue.size).toMutableSet()
         }

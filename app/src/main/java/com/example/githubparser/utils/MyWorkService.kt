@@ -16,14 +16,14 @@ import retrofit2.Response
 import kotlin.concurrent.thread
 
 
-class MyWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+class MyWorkService(context: Context, params: WorkerParameters) : Worker(context, params) {
     private var notesRepository = ObjectBox.boxStore.boxFor<Repository>()
     private var counterStargazers: Long = 1
     private var sortStargazersList: List<StargazersList> = emptyList()
     private var stargazersList: List<StargazersList> = emptyList()
 
     override fun doWork(): Result {
-        workMethod()
+        serviceMethod()
         return Result.success()
     }
 
@@ -31,7 +31,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
         return notesRepository.query().build().find()
     }
 
-    private fun workMethod() {
+    private fun serviceMethod() {
         getRepositories().forEach {
             thread {
                 fetchStargazers(it.ownerName, it.repositoryName, it.id, counterStargazers)
@@ -103,8 +103,7 @@ class MyWorker(context: Context, params: WorkerParameters) : Worker(context, par
                     repositoryName,
                     SortMap().getStargazersMap(it),
                     context as Context,
-                    idOwner,
-                    true
+                    idOwner,true
                 )
             }
             sortStargazersList = emptyList()

@@ -5,8 +5,10 @@ import com.omegar.mvp.InjectViewState
 import com.omegar.mvp.MvpPresenter
 
 @InjectViewState
-class DetailsPresenter : MvpPresenter<DetailsView>(){
-    fun showWebView() {
-        viewState.onShowWebView()
+class DetailsPresenter(url: String) : MvpPresenter<DetailsView>(){
+
+    init {
+        viewState.showWebUrl(url)
     }
+
 }

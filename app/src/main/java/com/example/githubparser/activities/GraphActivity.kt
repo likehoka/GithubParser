@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_graph.*
 import com.example.githubparser.activities.StargazersActivity.Companion.createIntent
 import com.example.githubparser.api.StargazersList
 import com.example.githubparser.model.Repository
+import com.example.githubparser.model.Stargazers
 import com.example.githubparser.mvp.GraphView
 import com.example.githubparser.mvp.presenters.GraphPresenter
 import com.github.mikephil.charting.charts.BarChart
@@ -63,12 +64,13 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         presenter.setContext(this)
         presenter.showListOfStars(ownerId)
         presenter.requestStargazers(ownerId, presenter.getPageCounter(), ownerNameText, repositoryNameText)
-        Log.d("test", "override fun onCreate(savedInstanceState: Bundle?)")
     }
 
     private fun getDataBase(): MutableList<Repository> {
         return repositoryBox.query().build().find()
     }
+
+
 
     override fun setBarChart(
         entries: ArrayList<BarEntry>,
@@ -79,7 +81,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         barDataSet!!.color = resources.getColor(com.example.githubparser.R.color.colorAccent)
         val data = BarData(labels, barDataSet)
         presenter.setBarChartEntries(barChart, data, entries)
-        Log.d("test", "override fun setBarChart(")
     }
 
     override fun onNothingSelected() {
@@ -111,17 +112,14 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         barChart.setOnChartValueSelectedListener(this)
         barChart.setDescription("Statistics")
         barChart.animateY(0)
-        Log.d("test", "override fun showBarChart(")
     }
 
     override fun limitRequest() {
         Toast.makeText(applicationContext, "Превышен лимит запросов", Toast.LENGTH_LONG).show()
-        Log.d("test", "Превышен лимит запросов")
     }
 
     override fun loadingComplete() {
         Toast.makeText(applicationContext, "Загрузка завершена", Toast.LENGTH_LONG).show()
-        Log.d("test", "Загрузка завершена")
     }
 
     override fun setStargazersCounter(
@@ -134,12 +132,10 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
             toLong,
             ownerNameText,
             repositoryNameText)
-        Log.d("test", "override fun setStargazersCounter(")
     }
 
     override fun setPage(counter: Long) {
         presenter.setPageCounter(counter)
-        Log.d("test", "override fun setPage($counter: Long) {")
     }
 
     override fun callBodySort(
@@ -150,7 +146,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         repositoryNameText: String
     ) {
         presenter.bodySort(body, ownerId, response, ownerNameText, repositoryNameText)
-        Log.d("test", "override fun callBodySort(")
     }
 
     override fun addItemBase(
@@ -159,7 +154,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         ownerNameText: String,
         repositoryNameText: String
     ) {
-        Log.d("test", "override fun addItemBase(")
         presenter.addItemDataBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
     }
 
@@ -169,7 +163,6 @@ class GraphActivity : BaseActivity(), OnChartValueSelectedListener, GraphView {
         ownerNameText: String,
         repositoryNameText: String
     ) {
-        Log.d("test", "override fun requestStargazers(")
         presenter.requestStargazers(ownerId, pageCounter, ownerNameText, repositoryNameText)
     }
 }

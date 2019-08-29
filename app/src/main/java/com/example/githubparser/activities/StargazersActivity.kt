@@ -17,13 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class StargazersActivity : BaseActivity(), StargazersView {
 
-    private var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
-    private val stargazersList = stargazersBox.query().build().find()
-    @InjectPresenter
-    lateinit var presenter: StargazersPresenter
-    private var repositoryBox = ObjectBox.boxStore.boxFor<Repository>()
-    private var ownerId: Long = 0
-
     companion object {
         private const val EXTRA_OWNER_NAME = "ownerName"
         private const val EXTRA_REPOSITORY_NAME = "repositoryName"
@@ -36,6 +29,13 @@ class StargazersActivity : BaseActivity(), StargazersView {
                 .putExtra(EXTRA_DATE, stringDate)
         }
     }
+
+    private var stargazersBox = ObjectBox.boxStore.boxFor<Stargazers>()
+    private val stargazersList = stargazersBox.query().build().find()
+    @InjectPresenter
+    lateinit var presenter: StargazersPresenter
+    private var repositoryBox = ObjectBox.boxStore.boxFor<Repository>()
+    private var ownerId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

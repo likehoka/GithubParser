@@ -15,7 +15,7 @@ import com.example.githubparser.adapters.RepositoryAdapter
 import com.example.githubparser.model.Repository
 import com.example.githubparser.mvp.RepositoryView
 import com.example.githubparser.mvp.presenters.RepositoryPresenter
-import com.example.githubparser.utils.MyWorker
+import com.example.githubparser.utils.MyWorkService
 import com.example.githubparser.utils.repositoryutils.RepositoryBase
 import com.omega_r.base.components.OmegaActivity
 import com.omegar.mvp.presenter.InjectPresenter
@@ -36,7 +36,7 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
         setSupportActionBar(toolbar)
-        workManager()
+        //serviceManager()
         repositoryRecyclerView.layoutManager = LinearLayoutManager(this)
         repositoryRecyclerView.adapter = adapter
         presenter.showAdapter(RepositoryBase().getRepositoriesList())
@@ -62,8 +62,7 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
         RepositoryBase().removeRepository(repository)
     }
 
-    override fun setList(list: List<Repository>,repository: Repository
-    ) {
+    override fun setList(list: List<Repository>,repository: Repository) {
         adapter.repositoryList = list
         adapter.refreshAdapter()
         RepositoryBase().putRepository(repository)
@@ -114,8 +113,8 @@ class RepositoryActivity : OmegaActivity(), RepositoryView, RepositoryAdapter.Ca
         super.onDestroy()
     }
 
-    private fun workManager() {
-        val myWorkRequest = PeriodicWorkRequest.Builder(MyWorker::class.java, 30, TimeUnit.MINUTES).build()
+    private fun serviceManager() {
+        val myWorkRequest = PeriodicWorkRequest.Builder(MyWorkService::class.java, 30, TimeUnit.MINUTES).build()
         WorkManager.getInstance().enqueue(myWorkRequest)
     }
 }

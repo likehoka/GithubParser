@@ -1,6 +1,7 @@
 package com.example.githubparser.mvp.presenters
 
 import android.content.Context
+import android.util.Log
 import com.example.githubparser.api.StargazersApi
 import com.example.githubparser.api.StargazersList
 import com.example.githubparser.mvp.GraphView
@@ -77,10 +78,11 @@ class GraphPresenter : MvpPresenter<GraphView>() {
         ownerNameText: String,
         repositoryNameText: String
     ) {
-        if (listStargazers != null && counterStargazers == 1.toLong()) {
+        Log.d("test", "counterStargazers = $counterStargazers")
+        var starsCount = 0
+        if (listStargazers != null && this.counterStargazers == 1.toLong()) {
             val entries = ArrayList<BarEntry>()
             var count = 0
-            var starsCount = 0
             listStargazers.forEach {
                 if (it.idRepository == ownerId) {
                     starsCount += it.likes
@@ -88,17 +90,12 @@ class GraphPresenter : MvpPresenter<GraphView>() {
                     count += 1
                 }
             }
-            if (entries.size != 0) {
-                viewState.setStargazersCounter(
-                    ownerId,
-                    ((starsCount / 100) + 1).toLong(), ownerNameText, repositoryNameText
-                )
-            } else viewState.setStargazersCounter(
-                ownerId, counterStargazers, ownerNameText, repositoryNameText
-            )
+            viewState.setStargazersCounter(
+                ownerId,
+                ((starsCount / 100) + 1).toLong(), ownerNameText, repositoryNameText)
+
         } else viewState.setStargazersCounter(
-            ownerId, counterStargazers, ownerNameText, repositoryNameText
-        )
+            ownerId, counterStargazers, ownerNameText, repositoryNameText)
 
     }
 
@@ -120,7 +117,13 @@ class GraphPresenter : MvpPresenter<GraphView>() {
                         if (response.body() == null && stargazersList.isEmpty()) {
                             viewState.onShowMistake()
                         } else {
-                            viewState.callBodySort(response.body(), ownerId, response, ownerNameText, repositoryNameText)
+                            viewState.callBodySort(
+                                response.body(),
+                                ownerId,
+                                response,
+                                ownerNameText,
+                                repositoryNameText
+                            )
                         }
                     }
                     if (response.message() == "Forbidden" && stargazersList.isEmpty()) {
@@ -143,12 +146,13 @@ class GraphPresenter : MvpPresenter<GraphView>() {
 
         if (body != null) {
             stargazersList += body
-            viewState.setPage(getPageCounter() + 1)
+            counterStargazers += 1
         }
         if (body != null && body.size == 100) {
             if (stargazersList.size <= 100) {
                 viewState.requestStargazers(ownerId, getPageCounter(), ownerNameText, repositoryNameText)
             } else {
+                counterStargazers += 1
                 viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
             }
         }
@@ -156,22 +160,25 @@ class GraphPresenter : MvpPresenter<GraphView>() {
             compareBaseStatus = false
             if (stargazersList.isNotEmpty()) {
                 viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+                counterStargazers = 1
             }
 
         }
         if (body == null) {
-            viewState.loadingComplete()
             compareBaseStatus = false
             if (stargazersList.isNotEmpty()) {
                 viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+                viewState.loadingComplete()
+
             }
         }
 
         if (body?.size!! < 100) {
-            viewState.loadingComplete()
             compareBaseStatus = false
+            counterStargazers = 1
             if (stargazersList.isNotEmpty()) {
                 viewState.addItemBase(ownerId, compareBaseStatus, ownerNameText, repositoryNameText)
+                viewState.loadingComplete()
             }
         }
     }

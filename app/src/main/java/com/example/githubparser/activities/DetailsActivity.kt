@@ -8,37 +8,37 @@ import com.example.githubparser.R
 import com.example.githubparser.mvp.DetailsView
 import com.example.githubparser.mvp.presenters.DetailsPresenter
 import com.omegar.mvp.presenter.InjectPresenter
+import com.omegar.mvp.presenter.ProvidePresenter
 
 class DetailsActivity : BaseActivity(), DetailsView {
+
+    companion object {
+        private const val EXTRA_WEBURL = "webUrl"
+
+        fun createIntent(context: Context, webUrl: String): Intent {
+            return Intent(context, DetailsActivity::class.java)
+                .putExtra(EXTRA_WEBURL, webUrl)
+        }
+
+    }
 
     @InjectPresenter
     lateinit var presenter: DetailsPresenter
     private lateinit var webView: WebView
-    private var url: String? = ""
 
-    companion object {
-        private const val EXTRA_WEBURL = "webUrl"
-        fun createIntent(
-            context: Context,
-            webUrl: String
-        ): Intent {
-            return Intent(context, DetailsActivity::class.java)
-                .putExtra(EXTRA_WEBURL, webUrl)
-        }
+    @ProvidePresenter
+    fun providePresenter(): DetailsPresenter {
+        return DetailsPresenter(intent.getStringExtra(EXTRA_WEBURL))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        url = intent.getStringExtra(EXTRA_WEBURL)
-        webView = findViewById<WebView>(R.id.webView)
-        presenter.showWebView()
+        webView = findViewById(R.id.webView)
     }
 
-    override fun onShowWebView() {
-        webView.also {
-            it!!.loadUrl("https://github.com/$url")
-        }
+    override fun showWebUrl(url: String) {
+        webView.loadUrl("https://github.com/$url")
     }
 
 }
